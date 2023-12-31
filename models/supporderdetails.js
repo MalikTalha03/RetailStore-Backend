@@ -1,12 +1,16 @@
 const moongoose = require('mongoose');
+const SupplierOrder = require('./supplierorder');
+const Product = require('./product');
 
 const suppOrderDetailsSchema = new moongoose.Schema({
     orderid: {
-        type: Number,
+        type: moongoose.Schema.Types.ObjectId,
+        ref: 'SupplierOrder',
         required: true
     },
     productid: {
-        type: Number,
+        type: moongoose.Schema.Types.ObjectId,
+        ref: 'Product',
         required: true
     },
     qty: {
