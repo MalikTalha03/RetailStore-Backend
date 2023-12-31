@@ -1,4 +1,7 @@
 const moongoose = require('mongoose');
+const Customer = require('./customer');
+const Employee = require('./employee');
+
 
 const customerOrderSchema = new moongoose.Schema({
     orderid: {
@@ -6,11 +9,13 @@ const customerOrderSchema = new moongoose.Schema({
         required: true
     },
     customerid: {
-        type: Number,
+        type: moongoose.Schema.Types.ObjectId,
+        ref: 'Customer',
         required: true
     },
     employeeid: {
-        type: Number,
+        type: moongoose.Schema.Types.ObjectId,
+        ref: 'Employee',
         required: true
     },
     orderDate: {
