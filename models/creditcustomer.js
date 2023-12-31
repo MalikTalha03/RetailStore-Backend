@@ -1,4 +1,5 @@
 const moongoose = require('mongoose');
+const Customer = require('./customer');
 
 const creditCustomerSchema = new moongoose.Schema({
     creditID: {
@@ -6,8 +7,8 @@ const creditCustomerSchema = new moongoose.Schema({
         required: true
     },
     customerID: {
-        type: Number,
-        required: true
+        type: moongoose.Schema.Types.ObjectId,
+        ref: 'Customer',
     },
     totalcredit: {
         type: Number,
