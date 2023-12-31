@@ -8,6 +8,7 @@ const suppTransactionSchema = new moongoose.Schema({
     },
     transactionType: {
         type: String,
+        enum: ['Credit', 'Cash', 'Bank Transfer'],
         required: true
     },
     transactionDate: {
