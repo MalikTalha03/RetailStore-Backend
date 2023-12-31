@@ -1,0 +1,19 @@
+{
+  "name": "retailstore-backend",
+  "version": "1.0.0",
+  "description": "Retail Store Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MalikTalha03/RetailStore-Backend.git"
+  },
+  "author": "Malik Talha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MalikTalha03/RetailStore-Backend/issues"
+  },
+  "homepage": "https://github.com/MalikTalha03/RetailStore-Backend#readme"
+}
