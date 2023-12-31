@@ -25,3 +25,6 @@ const productSchema = new mongoose.Schema({
         required: [true, 'Please enter product inventory']
     }
 });
+
+const Product = mongoose.model('Product', productSchema);
+module.exports = Product;
