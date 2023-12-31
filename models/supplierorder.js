@@ -1,4 +1,5 @@
 const moongoose = require('mongoose');
+const Supplier = require('./supplier');
 
 const supplierOrderSchema = new moongoose.Schema({
     orderid: {
@@ -6,7 +7,8 @@ const supplierOrderSchema = new moongoose.Schema({
         required: true
     },
     supplierid: {
-        type: Number,
+        type: moongoose.Schema.Types.ObjectId,
+        ref: 'Supplier',
         required: true
     },
     orderDate: {
