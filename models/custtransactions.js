@@ -1,4 +1,5 @@
 const moongoose = require('mongoose');
+const CustomerOrder = require('./customerorder');
 
 const suppOrderDetailsSchema = new moongoose.Schema({
     transactionID: {
@@ -18,7 +19,8 @@ const suppOrderDetailsSchema = new moongoose.Schema({
         required: true
     },
     orderID: {
-        type: Number,
+        type: moongoose.Schema.Types.ObjectId,
+        ref: 'CustomerOrder',
         required: true
     },
     totalAmount: {
