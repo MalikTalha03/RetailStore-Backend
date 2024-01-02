@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/MalikTalha03/RetailStore-Backend#readme",
   "dependencies": {
-    "mongoose": "^8.0.3"
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.3",
+    "nodemon": "^3.0.2"
   }
 }
