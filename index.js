@@ -5,11 +5,13 @@ const productRouter = require('./routes/products');
 require('dotenv').config();
 const connectionurl = process.env.MONGO_URL;
 const bodyParser = require('body-parser');
+const categoryRouter = require('./routes/category');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use('/products', productRouter);
+app.use('/category', categoryRouter);
 app.use(bodyParser.urlencoded({ extended: false }));
 
 mongoose.connect(connectionurl, { useNewUrlParser: true, useUnifiedTopology: true })
