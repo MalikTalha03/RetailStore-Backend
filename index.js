@@ -45,6 +45,11 @@ app.get('/', (req, res) => {
 }
 );
 
+app.get('*', (req, res) => {
+    res.redirect('/');
+}
+);
+
 
 mongoose.connect(connectionurl, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
