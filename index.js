@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 const connectionurl = process.env.MONGO_URL;
 const bodyParser = require('body-parser');
@@ -35,13 +36,14 @@ app.use('/customerorder', customerOrderRouter);
 app.use('/customerorderdetail', customerOrderDetailRouter);
 app.use('/customertransaction', customerTransactionRouter);
 app.use('/employee', employeeRouter);
-app.set('view engine', 'ejs');
+app.set('path', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'views')));
+app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
-    res.render('index');
+    res.sendFile('index.html', { root: app.get('path') });
 }
 );
-
 
 
 mongoose.connect(connectionurl, { useNewUrlParser: true, useUnifiedTopology: true })
