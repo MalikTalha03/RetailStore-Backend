@@ -14,7 +14,7 @@ const supplierOrderDetailRouter = require('./routes/supporderdetail');
 const supplierTransactionRouter = require('./routes/supptransactions');
 const customerOrderRouter = require('./routes/customerorder');
 const customerOrderDetailRouter = require('./routes/custorderdetail');
-const customerTransactionRouter = require('./routes/custtransactions');
+const customerTransactionRouter = require('./routes/custtransaction');
 const employeeRouter = require('./routes/employee');
 const productRouter = require('./routes/products');
 
@@ -35,6 +35,13 @@ app.use('/customerorder', customerOrderRouter);
 app.use('/customerorderdetail', customerOrderDetailRouter);
 app.use('/customertransaction', customerTransactionRouter);
 app.use('/employee', employeeRouter);
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res) => {
+    res.render('index');
+}
+);
+
 
 
 mongoose.connect(connectionurl, { useNewUrlParser: true, useUnifiedTopology: true })
