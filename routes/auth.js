@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const EmployeeModel = require('../models/employee');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const secret = process.env.HastString;
 
 router.get('/login', async (req, res) => {
     try {
@@ -13,10 +16,13 @@ router.get('/login', async (req, res) => {
         }
         try {
             if (await bcrypt.compare(password, employee.password)) {
-                res.send(employee);
+                const token = jwt.sign({ username: employee.username }, secret,
+                    { expiresIn: '3h' });
+                res.cookie('jwttoken', token, { httpOnly: true, maxAge: 3 * 60 * 60 * 1000 });
+                res.json({ message: 'Logged in' });
             }
             else {
-                res.send('Not Allowed');
+                res.json({ message: 'Wrong password' });
             }
         }
         catch (err) {
@@ -43,7 +49,7 @@ router.post('/register', async (req, res) => {
         password: hashedPassword
     });
     try {
-        const newEmployee = await employee.save();
+        const newEmployee = await employee.save()
         res.status(201).json(newEmployee);
     }
     catch (err) {
