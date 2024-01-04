@@ -24,26 +24,7 @@ router.get('/:id', async(req, res) => {
 }
 );
 
-router.post('/', async (req, res) => {
-    const employee = new EmployeeModel({
-        id : req.body.id,
-        firstname : req.body.firstname,
-        lastname : req.body.lastname,
-        contact : req.body.contact,
-        address : req.body.address,
-        salary : req.body.salary,
-        position : req.body.position,
-        password : req.body.password
-    });
-    try {
-        const newEmployee = await employee.save();
-        res.status(201).json(newEmployee);
-    }
-    catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-}
-);
+
 
 router.patch('/:id', async (req, res) => {
     try {
