@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { login, register, logout } = require('../middleware/auth');
 
-router.get('/login', login, (req, res) => {
+router.post ('/login', login, (req, res) => {
     res.status(200).json({ message: 'Login Successful' });
 }
 );
