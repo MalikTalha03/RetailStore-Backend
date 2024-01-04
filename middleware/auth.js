@@ -19,7 +19,6 @@ const login = async (req, res,next ) => {
                 res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
                 res.status(200).json({ 
                     message: 'Login Successful',
-                    employee: employee
                  });
             }
             else {
@@ -36,11 +35,12 @@ const login = async (req, res,next ) => {
 }
 
 const register = async (req, res) => {
-    if(!req.body.username){
-        const username = req.body.firstname+req.body.lastname
+    const usernamee = req.body.username;
+    if(usernamee == null){
+        const usernamee = req.body.firstname+req.body.lastname
     }
     else{
-        const username = req.body.username
+        const usernamee = req.body.username
     }
     const password = req.body.password;
     const salt = await bcrypt.genSalt();
@@ -53,14 +53,13 @@ const register = async (req, res) => {
         address: req.body.address,
         salary: req.body.salary,
         position: req.body.position,
-        username: username,
+        username: usernamee,
         password: hashedPassword
     });
     try {
         const newEmployee = await employee.save();
         res.status(201).json({
             message: 'Registration Successful',
-            employee: newEmployee
         });
     }
     catch (err) {
