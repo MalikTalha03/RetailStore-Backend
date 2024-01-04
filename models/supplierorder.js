@@ -25,5 +25,18 @@ const supplierOrderSchema = new moongoose.Schema({
     },
 });
 
+supplierOrderSchema.pre('save', function(next) {
+    if(!this.orderid){
+        const maxid = this.constructor.find().sort({orderid: -1}).limit(1).then(result => {
+            this.orderid = result[0].orderid + 1;
+            next();
+        });
+    }
+    else{
+        next();
+    }
+}
+);
+
 const SupplierOrder = moongoose.model('SupplierOrder', supplierOrderSchema);
 module.exports = SupplierOrder;
