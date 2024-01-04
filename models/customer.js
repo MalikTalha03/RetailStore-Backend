@@ -19,5 +19,18 @@ const customerSchema = new mongoose.Schema({
     },
 });
 
+customerSchema.pre('save', function(next) {
+    if(!this.id){
+        const maxid = this.constructor.find().sort({id: -1}).limit(1).then(result => {
+            this.id = result[0].id + 1;
+            next();
+        });
+    }
+    else{
+        next();
+    }
+}
+);
+
 const Customer = mongoose.model('Customer', customerSchema);
 module.exports = Customer;
