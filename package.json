@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/MalikTalha03/RetailStore-Backend#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
