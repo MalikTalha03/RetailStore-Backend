@@ -37,11 +37,15 @@ const login = async (req, res,next ) => {
 
 const register = async (req, res) => {
     if(!req.body.username){
-        username = req.body.firstname+req.body.lastname
+        const username = req.body.firstname+req.body.lastname
     }
     else{
-        username = req.body.username
+        const username = req.body.username
     }
+    const password = req.body.password;
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const employee = new EmployeeModel({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -50,7 +54,7 @@ const register = async (req, res) => {
         salary: req.body.salary,
         position: req.body.position,
         username: username,
-        password: req.body.password
+        password: hashedPassword
     });
     try {
         const newEmployee = await employee.save();
