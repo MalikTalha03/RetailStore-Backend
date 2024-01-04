@@ -12,7 +12,7 @@ router.post('/register', register, (req, res) => {
 }
 );
 
-router.get('/logout', logout, (req, res) => {
+router.post('/logout', logout, (req, res) => {
     res.status(200).json({ message: 'Logout Successful' });
 }
 );
