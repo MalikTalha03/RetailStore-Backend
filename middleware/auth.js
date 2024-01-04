@@ -63,8 +63,23 @@ const logout = (req, res) => {
     res.status(200).json({ message: 'Logout Successful' });
 }
 
+const loggedIn = (req, res, next) => {
+    const token = req.cookies.token;
+    if (token == null) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+    try {
+        jwt.verify(token, secret);
+        next();
+    }
+    catch (err) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+}
+
 module.exports = {
     login,
     register,
-    logout
+    logout,
+    loggedIn
 }
