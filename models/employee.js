@@ -3,7 +3,6 @@ const moongoose = require('mongoose');
 const employeeSchema = new moongoose.Schema({
     id: {
         type: Number,
-        required: true
     },
     firstname: {
         type: String,
@@ -33,14 +32,21 @@ const employeeSchema = new moongoose.Schema({
         type: String,
         required: [true, 'Please enter employee password']
     },
+    username: {
+        type: String,
+        required: [true, 'Please enter employee username']
+    }
 });
 
-employeeSchema.pre('save', function(next) {
+employeeSchema.pre('save',async function(next) {
     if(!this.id){
-        const maxid = this.constructor.find().sort({id: -1}).limit(1).then(result => {
-            this.id = result[0].id + 1;
+        const result = await this.constructor.find().sort({ id: -1 }).limit(1);
+            if (result && result.length > 0) {
+                this.id = result[0].id + 1;
+            } else {
+                this.id = 1; // Set the initial value if no records are found
+            }
             next();
-        });
     }
     else{
         next();
