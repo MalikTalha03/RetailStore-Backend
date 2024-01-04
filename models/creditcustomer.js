@@ -16,5 +16,17 @@ const creditCustomerSchema = new moongoose.Schema({
     },
 });
 
+creditCustomerSchema.pre('save', function(next) {
+    if(!this.creditID){
+        const maxid = this.constructor.find().sort({creditID: -1}).limit(1).then(result => {
+            this.creditID = result[0].creditID + 1;
+            next();
+        });
+    }
+    else{
+        next();
+    }
+});
+
 const CreditCustomer = moongoose.model('CreditCustomer', creditCustomerSchema);
 module.exports = CreditCustomer;
