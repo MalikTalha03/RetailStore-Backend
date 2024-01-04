@@ -18,12 +18,15 @@ const customerOrderDetailRouter = require('./routes/custorderdetail');
 const customerTransactionRouter = require('./routes/custtransaction');
 const employeeRouter = require('./routes/employee');
 const productRouter = require('./routes/products');
+const authRouter = require('./routes/auth');
 
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use('/auth', authRouter);
 app.use('/products', productRouter);
 app.use('/category', categoryRouter);
 app.use('/customer', customerRouter);
@@ -49,7 +52,6 @@ app.get('*', (req, res) => {
     res.redirect('/');
 }
 );
-
 
 mongoose.connect(connectionurl, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
