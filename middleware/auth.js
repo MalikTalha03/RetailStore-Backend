@@ -36,6 +36,12 @@ const login = async (req, res,next ) => {
 }
 
 const register = async (req, res) => {
+    if(!req.body.username){
+        username = req.body.firstname+req.body.lastname
+    }
+    else{
+        username = req.body.username
+    }
     const employee = new EmployeeModel({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -43,7 +49,7 @@ const register = async (req, res) => {
         address: req.body.address,
         salary: req.body.salary,
         position: req.body.position,
-        username: req.body.username,
+        username: username,
         password: req.body.password
     });
     try {
