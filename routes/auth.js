@@ -29,6 +29,9 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
+    password = req.body.password;
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
     const employee = new EmployeeModel({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -37,7 +40,7 @@ router.post('/register', async (req, res) => {
         salary: req.body.salary,
         position: req.body.position,
         username: req.body.username,
-        password: req.body.password
+        password: hashedPassword
     });
     try {
         const newEmployee = await employee.save();
