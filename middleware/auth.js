@@ -23,7 +23,7 @@ const login = async (req, res,next ) => {
                  });
             }
             else {
-                res.status(401).json({ message: 'Not Allowed' });
+                res.status(401).json({ message: 'Incorrect Password' });
             }
         }
         catch (err) {
@@ -48,7 +48,10 @@ const register = async (req, res) => {
     });
     try {
         const newEmployee = await employee.save();
-        res.status(201).json(newEmployee);
+        res.status(201).json({
+            message: 'Registration Successful',
+            employee: newEmployee
+        });
     }
     catch (err) {
         res.status(400).json({ message: err.message });
