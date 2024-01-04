@@ -30,5 +30,18 @@ const suppOrderDetailsSchema = new moongoose.Schema({
     },
 });
 
+suppOrderDetailsSchema.pre('save', function(next) {
+    if(!this.transactionID){
+        const maxid = this.constructor.find().sort({transactionID: -1}).limit(1).then(result => {
+            this.transactionID = result[0].transactionID + 1;
+            next();
+        });
+    }
+    else{
+        next();
+    }
+}
+);
+
 const SuppOrderDetails = moongoose.model('SuppOrderDetails', suppOrderDetailsSchema);
 module.exports = SuppOrderDetails;
