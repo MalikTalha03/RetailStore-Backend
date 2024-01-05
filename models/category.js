@@ -3,7 +3,7 @@ const moongoose = require('mongoose');
 const categorySchema = new moongoose.Schema({
     id: {
         type: Number,
-        required: true
+        unique: true,
     },
     name: {
         type: String,
@@ -11,17 +11,27 @@ const categorySchema = new moongoose.Schema({
     },
 });
 
-categorySchema.pre('save', function(next) {
-    if(!this.id){
-        const maxid = this.constructor.find().sort({id: -1}).limit(1).then(result => {
-            this.id = result[0].id + 1;
+categorySchema.pre('save', async function(next) {
+    if (!this.id) {
+        try {
+            const result = await this.constructor.find().sort({ id: -1 }).limit(1);
+            if (result.length > 0) {
+                this.id = result[0].id + 1;
+            } else {
+                // If no records are found, set the initial id to 1 or any value you prefer.
+                this.id = 1;
+            }
             next();
-        });
-    }
-    else{
+        } catch (error) {
+            // Handle any potential errors here
+            console.error(error);
+            next(error);
+        }
+    } else {
         next();
     }
 });
+
 
 const Category = moongoose.model('Category', categorySchema);
 module.exports = Category;
