@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const customertransaction = await CustomerTransactionModel.findById(req.params.id);
+        const customertransaction = await CustomerTransactionModel.find({ id: req.params.id });
         res.send(customertransaction);
     }
     catch (err) {
@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const customertransaction = await CustomerTransactionModel.findById(req.params.id);
+        const customertransaction = await CustomerTransactionModel.find({ id: req.params.id });
         if (req.body.transactionType) {
             customertransaction.transactionType = req.body.transactionType;
         }
@@ -72,7 +72,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const customertransaction = await CustomerTransactionModel.findById(req.params.id);
+        const customertransaction = await CustomerTransactionModel.find({ id: req.params.id });
         const deletedCustomerTransaction = await customertransaction.remove();
         res.json(deletedCustomerTransaction);
     }
