@@ -3,6 +3,7 @@ const moongoose = require('mongoose');
 const employeeSchema = new moongoose.Schema({
     id: {
         type: Number,
+        unique: true,
     },
     firstname: {
         type: String,
