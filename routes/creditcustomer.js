@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const creditcustomer = await CreditCustomerModel.findById(req.params.id);
+        const creditcustomer = await CreditCustomerModel.find({ id: req.params.id });
         res.send(creditcustomer);
     }
     catch (err) {
@@ -56,7 +56,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const creditcustomer = await CreditCustomerModel.findById(req.params.id);
+        const creditcustomer = await CreditCustomerModel.find({ id: req.params.id });
         const deletedCreditCustomer = await creditcustomer.remove();
         res.json(deletedCreditCustomer);
     }
