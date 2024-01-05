@@ -4,7 +4,7 @@ const Customer = require('./customer');
 const creditCustomerSchema = new moongoose.Schema({
     creditID: {
         type: Number,
-        required: true
+        unique: true,
     },
     customerID: {
         type: moongoose.Schema.Types.ObjectId,
@@ -18,10 +18,20 @@ const creditCustomerSchema = new moongoose.Schema({
 
 creditCustomerSchema.pre('save', function(next) {
     if(!this.creditID){
-        const maxid = this.constructor.find().sort({creditID: -1}).limit(1).then(result => {
-            this.creditID = result[0].creditID + 1;
+        try {
+            const result = this.constructor.find().sort({ creditID: -1 }).limit(1);
+            if(result.length > 0){
+                this.creditID = result[0].creditID + 1;
+            }
+            else{
+                this.creditID = 1;
+            }
             next();
-        });
+        } 
+        catch (error) {
+            console.error(error);
+            next(error);
+        }
     }
     else{
         next();
