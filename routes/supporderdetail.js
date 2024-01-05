@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const supporderdetail = await SupplierOrderetailDModel.findById(req.params.id);
+        const supporderdetail = await SupplierOrderetailDModel.find({ id: req.params.id });
         res.send(supporderdetail);
     }
     catch (err) {
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const supporderdetail = await SupplierOrderetailDModel.findById(req.params.id);
+        const supporderdetail = await SupplierOrderetailDModel.find({ id: req.params.id });
         if (req.body.productid) {
             supporderdetail.productid = req.body.productid;
         }
@@ -64,7 +64,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const supporderdetail = await SupplierOrderetailDModel.findById(req.params.id);
+        const supporderdetail = await SupplierOrderetailDModel.find({ id: req.params.id });
         const deletedSupplierOrderetailD = await supporderdetail.remove();
         res.json(deletedSupplierOrderetailD);
     }
