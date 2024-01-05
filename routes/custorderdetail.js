@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const customerorderdetail = await CustomerOrderDetailModel.findById(req.params.id);
+        const customerorderdetail = await CustomerOrderDetailModel.find({ id: req.params.id });
         res.send(customerorderdetail);
     }
     catch (err) {
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const customerorderdetail = await CustomerOrderDetailModel.findById(req.params.id);
+        const customerorderdetail = await CustomerOrderDetailModel.find({ id: req.params.id });
         if (req.body.productID) {
             customerorderdetail.productID = req.body.productID;
         }
@@ -63,7 +63,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const customerorderdetail = await CustomerOrderDetailModel.findById(req.params.id);
+        const customerorderdetail = await CustomerOrderDetailModel.find({ id: req.params.id });
         const deletedCustomerOrderDetail = await customerorderdetail.remove();
         res.json(deletedCustomerOrderDetail);
     }
