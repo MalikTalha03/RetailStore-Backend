@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const supplier = await SupplierModel.findById(req.params.id);
+        const supplier = await SupplierModel.find({ id: req.params.id });
         res.send(supplier);
     }
     catch (err) {
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const supplier = await SupplierModel.findById(req.params.id);
+        const supplier = await SupplierModel.find({ id: req.params.id });
         if (req.body.name) {
             supplier.name = req.body.name;
         }
@@ -64,7 +64,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const supplier = await SupplierModel.findById(req.params.id);
+        const supplier = await SupplierModel.find({ id: req.params.id });
         const deletedSupplier = await supplier.remove();
         res.json(deletedSupplier);
     }
