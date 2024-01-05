@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const suppliertransaction = await SupplierTransactionModel.findById(req.params.id);
+        const suppliertransaction = await SupplierTransactionModel.find({ id: req.params.id });
         res.send(suppliertransaction);
     }
     catch (err) {
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const suppliertransaction = await SupplierTransactionModel.findById(req.params.id);
+        const suppliertransaction = await SupplierTransactionModel.find({ id: req.params.id })
         if (req.body.transactionType) {
             suppliertransaction.transactionType = req.body.transactionType;
         }
@@ -62,6 +62,18 @@ router.patch('/:id', async (req, res) => {
     }
     catch (err) {
         res.status(400).json({ message: err.message });
+    }
+}
+);
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const suppliertransaction = await SupplierTransactionModel.find({ id: req.params.id });
+        const deletedSupplierTransaction = await suppliertransaction.remove();
+        res.json(deletedSupplierTransaction);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
     }
 }
 );
