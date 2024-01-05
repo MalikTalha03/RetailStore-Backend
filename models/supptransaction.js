@@ -4,7 +4,7 @@ const SupplierOrder = require('./supplierorder');
 const suppTransactionSchema = new moongoose.Schema({
     transactionID: {
         type: Number,
-        required: true
+        unique: true
     },
     transactionType: {
         type: String,
@@ -28,10 +28,20 @@ const suppTransactionSchema = new moongoose.Schema({
 
 suppTransactionSchema.pre('save', function(next) {
     if(!this.transactionID){
-        const maxid = this.constructor.find().sort({transactionID: -1}).limit(1).then(result => {
-            this.transactionID = result[0].transactionID + 1;
+        try {
+            const result = this.constructor.find().sort({ transactionID: -1 }).limit(1);
+            if(result.length > 0){
+                this.transactionID = result[0].transactionID + 1;
+            }
+            else{
+                this.transactionID = 1;
+            }
             next();
-        });
+        } 
+        catch (error) {
+            console.error(error);
+            next(error);
+        }
     }
     else{
         next();
