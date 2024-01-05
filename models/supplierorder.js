@@ -4,7 +4,7 @@ const Supplier = require('./supplier');
 const supplierOrderSchema = new moongoose.Schema({
     orderid: {
         type: Number,
-        required: true
+        unique: true,
     },
     supplierid: {
         type: moongoose.Schema.Types.ObjectId,
@@ -27,10 +27,20 @@ const supplierOrderSchema = new moongoose.Schema({
 
 supplierOrderSchema.pre('save', function(next) {
     if(!this.orderid){
-        const maxid = this.constructor.find().sort({orderid: -1}).limit(1).then(result => {
-            this.orderid = result[0].orderid + 1;
+        try {
+            const result = this.constructor.find().sort({ orderid: -1 }).limit(1);
+            if(result.length > 0){
+                this.orderid = result[0].orderid + 1;
+            }
+            else{
+                this.orderid = 1;
+            }
             next();
-        });
+        } 
+        catch (error) {
+            console.error(error);
+            next(error);
+        }
     }
     else{
         next();
