@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const employee = await EmployeeModel.findById(req.params.id);
+        const employee = await EmployeeModel.find({ id: req.params.id });
         res.send(employee);
     }
     catch (err) {
@@ -28,7 +28,7 @@ router.get('/:id', async(req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const employee = await EmployeeModel.findById(req.params.id);
+        const employee = await EmployeeModel.find({ id: req.params.id });
         if (req.body.firstname) {
             employee.firstname = req.body.firstname;
         }
@@ -61,7 +61,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const employee = await EmployeeModel.findById(req.params.id);
+        const employee = await EmployeeModel.find({ id: req.params.id });
         const deletedEmployee = await employee.remove();
         res.json(deletedEmployee);
     }
