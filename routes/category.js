@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const category = await CategoryModel.findById(req.params.id);
+        const category = await CategoryModel.find({ id: req.params.id });
         res.send(category);
     }
     catch (err) {
@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const category = await CategoryModel.findById(req.params.id);
+        const category = await CategoryModel.find({ id: req.params.id });
         if (req.body.name) {
             category.name = req.body.name;
         }
@@ -56,7 +56,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const category = await CategoryModel.findById(req.params.id);
+        const category = await CategoryModel.find({ id: req.params.id });
         const deletedCategory = await category.remove();
         res.json(deletedCategory);
     }
