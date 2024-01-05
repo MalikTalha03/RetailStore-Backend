@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const supplier = await SupplierModel.findById(req.params.id);
+        const supplier = await SupplierModel.find({ id: req.params.id });
         res.send(supplier);
     }
     catch (err) {
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const supplier = await SupplierModel.findById(req.params.id);
+        const supplier = await SupplierModel.find({ id: req.params.id });
         if (req.body.supplierid) {
             supplier.supplierid = req.body.supplierid;
         }
@@ -62,6 +62,18 @@ router.patch('/:id', async (req, res) => {
     }
     catch (err) {
         res.status(400).json({ message: err.message });
+    }
+}
+);
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const supplier = await SupplierModel.find({ id: req.params.id });
+        const deletedSupplier = await supplier.remove();
+        res.json(deletedSupplier);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
     }
 }
 );
