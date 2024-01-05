@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
     id: {
         type: Number,
-        required: true
+        unique: true
     },
     name: {
         type: String,
@@ -28,10 +28,20 @@ const productSchema = new mongoose.Schema({
 
 productSchema.pre('save', function(next) {
     if(!this.id){
-        const maxid = this.constructor.find().sort({id: -1}).limit(1).then(result => {
-            this.id = result[0].id + 1;
+        try {
+            const result = this.constructor.find().sort({ id: -1 }).limit(1);
+            if(result.length > 0){
+                this.id = result[0].id + 1;
+            }
+            else{
+                this.id = 1;
+            }
             next();
-        });
+        } 
+        catch (error) {
+            console.error(error);
+            next(error);
+        }
     }
     else{
         next();
