@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try {
-        const product = await ProductModel.findById(req.params.id);
+        const product = await ProductModel.find({ id: req.params.id });
         res.send(product);
     }
     catch (err) {
@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
-        const product = await ProductModel.findById(req.params.id);
+        const product = await ProductModel.find({ id: req.params.id });
         if (req.body.name) {
             product.name = req.body.name;
         }
@@ -71,7 +71,7 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const product = await ProductModel.findById(req.params.id);
+        const product = await ProductModel.find({ id: req.params.id });
         await product.remove();
         res.json({ message: 'Deleted Product' });
     }
