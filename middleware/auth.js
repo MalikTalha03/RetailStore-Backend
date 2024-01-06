@@ -13,9 +13,11 @@ const login = async (req, res,next ) => {
         if (employee == null) {
             return res.status(400).json({ message: 'Cannot find employee' });
         }
+        const position = employee.position;
         try {
+            console.log("position",position);
             if (await bcrypt.compare(password, employee.password)) {
-                const token = jwt.sign({ username: username }, secret, { expiresIn: '1h' });
+                const token = jwt.sign({ username: username, position: position }, secret, { expiresIn: '1h' });
                 res.status(200).json({ 
                     message: 'Login Successful',
                     token: token,
@@ -33,7 +35,6 @@ const login = async (req, res,next ) => {
         res.status(500).json({ message: err.message });
     }
 }
-
 const register = async (req, res) => {
     const usernamee = req.body.username;
     if(usernamee == null){
