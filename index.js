@@ -20,7 +20,9 @@ const customerOrderDetailRouter = require('./routes/custorderdetail');
 const customerTransactionRouter = require('./routes/custtransaction');
 const employeeRouter = require('./routes/employee');
 const productRouter = require('./routes/products');
-const authRouter = require('./routes/auth');
+const loginRouter = require('./routes/login');
+const regRouter = require('./routes/register');
+const { isAdmin } = require('./middleware/admin');
 
 
 const app = express();
@@ -29,7 +31,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/auth', authRouter);
+
+app.use('/auth/register',isAdmin, regRouter);
+app.use('/auth/login', loginRouter);
 app.use('/products', loggedIn, productRouter);
 app.use('/category', loggedIn, categoryRouter);
 app.use('/customer', loggedIn, customerRouter);
