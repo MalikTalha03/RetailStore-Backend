@@ -56,9 +56,8 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const category = await CategoryModel.find({ id: req.params.id });
-        const deletedCategory = await category.remove();
-        res.json(deletedCategory);
+        const category = await CategoryModel.findOneAndDelete({ id: req.params.id });
+        res.json({ message: `Category ${category.name} has been deleted` });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
