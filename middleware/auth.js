@@ -82,19 +82,19 @@ const loggedIn = (req, res, next) => {
     if (!token) {
         return res.status(401).json({ message: 'Token not found' });
     }
-    
     try {
         const decoded = jwt.verify(token, secret);
         req.user = decoded;
-        next();
+        
+        console.log("decoded",decoded);
         const now = Date.now().valueOf() / 1000;
         if (typeof decoded.exp !== 'undefined' && decoded.exp < now) {
             return res.status(401).json({ message: 'Token Expired' });
         }
-        
+        next();
     }
     catch (err) {
-        res.status(400).json({ message: 'Invalid Token' });
+        res.status(400).json({ message:err.message});
     }
 }
 
