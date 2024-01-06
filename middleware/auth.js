@@ -73,16 +73,27 @@ const logout = (req, res) => {
 }
 
 const loggedIn = (req, res, next) => {
-    const token = req.cookies.token;
-    if (token == null) {
-        return res.status(401).json({ message: 'Unauthorized' });
+    const header = req.headers.authorization;
+    if(!header || !header.startsWith('Bearer ')){
+        return res.status(401).json({message: 'Token not found'});
     }
+    const token = header.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Token not found' });
+    }
+    
     try {
-        jwt.verify(token, secret);
+        const decoded = jwt.verify(token, secret);
+        req.user = decoded;
         next();
+        const now = Date.now().valueOf() / 1000;
+        if (typeof decoded.exp !== 'undefined' && decoded.exp < now) {
+            return res.status(401).json({ message: 'Token Expired' });
+        }
+        
     }
     catch (err) {
-        return res.status(403).json({ message: 'Forbidden' });
+        res.status(400).json({ message: 'Invalid Token' });
     }
 }
 
