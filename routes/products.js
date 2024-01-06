@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ProductModel = require('../models/product');
+const { isAdmin } = require('../middleware/admin');
 
 router.get('/', async (req, res) => {
     try {
@@ -23,7 +24,7 @@ router.get('/:id', async(req, res) => {
 }
 );
 
-router.post('/', async (req, res) => {
+router.post('/',isAdmin, async (req, res) => {
     const product = new ProductModel({
         id: req.body.id,
         name: req.body.name,
@@ -71,9 +72,8 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const product = await ProductModel.find({ id: req.params.id });
-        await product.remove();
-        res.json({ message: 'Deleted Product' });
+        const product = await ProductModel.findOneAndDelete({ id: req.params.id });
+        res.json({ message: `Product ${product.name} has been deleted` });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
