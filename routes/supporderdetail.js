@@ -64,9 +64,8 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const supporderdetail = await SupplierOrderetailDModel.find({ id: req.params.id });
-        const deletedSupplierOrderetailD = await supporderdetail.remove();
-        res.json(deletedSupplierOrderetailD);
+        const supporderdetail = await SupplierOrderetailDModel.findOneAndDelete({ id: req.params.id });
+        res.json({ message: `SupplierOrderetailD ${supporderdetail.productid} has been deleted` });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
