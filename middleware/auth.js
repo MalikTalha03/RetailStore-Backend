@@ -86,7 +86,6 @@ const loggedIn = (req, res, next) => {
         const decoded = jwt.verify(token, secret);
         req.user = decoded;
         
-        console.log("decoded",decoded);
         const now = Date.now().valueOf() / 1000;
         if (typeof decoded.exp !== 'undefined' && decoded.exp < now) {
             return res.status(401).json({ message: 'Token Expired' });
