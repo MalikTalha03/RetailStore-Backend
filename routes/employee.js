@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const EmployeeModel = require('../models/employee');
-
-router.get('/', async (req, res) => {
+const { isAdmin } = require('../middleware/admin');
+router.get('/',isAdmin, async (req, res) => {
     try {
         const employees = await EmployeeModel.find();
         res.send(employees);
@@ -26,7 +26,7 @@ router.get('/:id', async(req, res) => {
 
 
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id',isAdmin ,async (req, res) => {
     try {
         const employee = await EmployeeModel.find({ id: req.params.id });
         if (req.body.firstname) {
@@ -59,11 +59,12 @@ router.patch('/:id', async (req, res) => {
 }
 );
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',isAdmin ,async (req, res) => {
     try {
-        const employee = await EmployeeModel.find({ id: req.params.id });
-        const deletedEmployee = await employee.remove();
-        res.json(deletedEmployee);
+        const employee = await EmployeeModel.findOneAndDelete({ id: req.params.id });
+        res.json({
+            message: `Employee with ID: ${employee.id} has been deleted`,
+        });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
