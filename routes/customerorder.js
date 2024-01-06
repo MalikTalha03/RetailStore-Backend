@@ -72,9 +72,8 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const customerorder = await CustomerOrderModel.find({ id: req.params.id });
-        const deletedCustomerOrder = await customerorder.remove();
-        res.json(deletedCustomerOrder);
+        const customerorder = await CustomerOrderModel.findOneAndDelete({ id: req.params.id });
+        res.json({ message: `CustomerOrder ${customerorder.orderID} has been deleted` });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
