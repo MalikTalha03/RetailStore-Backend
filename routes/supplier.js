@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     });
     try {
         const newSupplier = await supplier.save();
-        res.status(201).json(newSupplier);
+        res.status(201).json({message: "Supplier Added"});
     }
     catch (err) {
         res.status(400).json({ message: err.message });
