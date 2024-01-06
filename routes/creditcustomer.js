@@ -56,9 +56,8 @@ router.patch('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const creditcustomer = await CreditCustomerModel.find({ id: req.params.id });
-        const deletedCreditCustomer = await creditcustomer.remove();
-        res.json(deletedCreditCustomer);
+        const creditcustomer = await CreditCustomerModel.findOneAndDelete({ id: req.params.id });
+        res.json({ message: `CreditCustomer ${creditcustomer.creditID} has been deleted` });
     }
     catch (err) {
         res.status(500).json({ message: err.message });
