@@ -2,11 +2,19 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: #f5f5f5;
+    background-color: #e8e8e8; /* Light gray background */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    opacity: 0; /* Initially set to 0 for fade-in effect */
+    animation: fadeIn 1s ease-out forwards; /* Fade-in animation */
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
 }
 
 h1, h3 {
@@ -16,15 +24,23 @@ h1, h3 {
 p {
     font-size: 18px;
     margin-bottom: 20px;
+    color: #333; /* Darker text color */
 }
 
 .routes {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Align items at the start */
     flex-wrap: wrap;
-    width: 90%;
+    width: 100%;
     gap: 20px;
     justify-content: space-around; /* Adjust as needed */
+    animation: fadeInRoutes 1s ease-out 0.5s forwards; /* Fade-in animation for routes */
+}
+
+@keyframes fadeInRoutes {
+    to {
+        opacity: 1;
+    }
 }
 
 .routes a {
@@ -36,7 +52,8 @@ p {
 }
 
 .routes a:hover {
-    color: #1272df;
+    color: #ff6600; /* Orange on hover */
+    transform: scale(1.1); /* Scale effect on hover */
 }
 
 .routes .main {
@@ -44,13 +61,26 @@ p {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1); /* Increased shadow */
     width: calc(33.33% - 20px);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    animation: pulse 1s ease-in-out infinite alternate; /* Pulsating animation */
+}
+
+@keyframes pulse {
+    to {
+        transform: scale(1.05);
+    }
+}
+
+.routes .main:hover {
+    transform: scale(1.05) rotate(2deg); /* Scale and rotate effect on hover */
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15); /* Change in box shadow on hover */
+    background-color: #f0f0f0; /* Lighter background color on hover */
 }
 
 .routes .main li {
     margin-bottom: 10px;
     list-style: none;
+    color: #333; /* Darker text color */
 }
-
-
