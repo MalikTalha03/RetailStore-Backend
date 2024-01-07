@@ -2,75 +2,104 @@ const express = require('express');
 const router = express.Router();
 const SupplierModel = require('../models/supplier');
 
+// Get all suppliers
 router.get('/', async (req, res) => {
     try {
         const suppliers = await SupplierModel.find();
         res.send(suppliers);
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
-);
+});
 
-router.get('/:id', async(req, res) => {
-    try {
-        const supplier = await SupplierModel.find({ id: req.params.id });
-        res.send(supplier);
-    }
-    catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-}
-);
-
+// Post supplier information
 router.post('/', async (req, res) => {
     const supplier = new SupplierModel({
-        id : req.body.id,
-        name : req.body.name,
-        contact : req.body.contact,
-        address : req.body.address
+        name: req.body.name,
+        contact: req.body.contact,
+        address: req.body.address,
     });
+
     try {
         const newSupplier = await supplier.save();
-        res.status(201).json({message: "Supplier Added"});
-    }
-    catch (err) {
+        res.status(201).json({ message: 'Supplier Added', id: newSupplier._id });
+    } catch (err) {
         res.status(400).json({ message: err.message });
     }
-}
-);
+});
 
-router.patch('/:id', async (req, res) => {
+// Patch route for adding an order
+router.patch('/:id/orders', async (req, res) => {
     try {
-        const supplier = await SupplierModel.find({ id: req.params.id });
-        if (req.body.name) {
-            supplier.name = req.body.name;
+        const supplier = await SupplierModel.findById(req.params.id);
+        if (!supplier) {
+            return res.status(404).json({ message: 'Supplier not found' });
         }
-        if (req.body.contact) {
-            supplier.contact = req.body.contact;
-        }
-        if (req.body.address) {
-            supplier.address = req.body.address;
-        }
+
+        supplier.orders.push({
+            orderDate: req.body.orderDate,
+            totalAmount: req.body.totalAmount,
+            paymentStatus: req.body.paymentStatus,
+        });
+
         const updatedSupplier = await supplier.save();
-        res.json(updatedSupplier);
+        res.json({ message: 'Order Added', id: updatedSupplier.orders[updatedSupplier.orders.length - 1]._id});
+    } catch (err) {
+        res.status(400).json({ message: err.message });
     }
+});
+
+// Patch route for adding order details
+router.patch('/:id/orders/:orderId/details', async (req, res) => {
+    try {
+        const supplier = await SupplierModel.findById(req.params.id);
+        if (!supplier) {
+            return res.status(404).json({ message: 'Supplier not found' });
+        }
+
+        const order = supplier.orders.id(req.params.orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        order.orderDetails.push({
+            productid: req.body.productid,
+            qty: req.body.qty,
+            unitPrice: req.body.unitPrice,
+        });
+
+        const updatedSupplier = await supplier.save();
+        res.json({ message: 'Order Details Added', id: updatedSupplier.orders[updatedSupplier.orders.length - 1].orderDetails[updatedSupplier.orders[updatedSupplier.orders.length - 1].orderDetails.length - 1]._id});
+    } 
     catch (err) {
         res.status(400).json({ message: err.message });
     }
-}
-);
+});
 
-router.delete('/:id', async (req, res) => {
+// Patch route for adding transactions
+router.patch('/:id/orders/:orderId/transactions', async (req, res) => {
     try {
-        const supplier = await SupplierModel.findOneAndDelete({ id: req.params.id });
-        res.json({ message: `Supplier ${supplier.name} has been deleted` });
+        const supplier = await SupplierModel.findById(req.params.id);
+        if (!supplier) {
+            return res.status(404).json({ message: 'Supplier not found' });
+        }
+
+        const order = supplier.orders.id(req.params.orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        order.transactions.push({
+            transactionType: req.body.transactionType,
+            transactionDate: req.body.transactionDate,
+            totalAmount: req.body.totalAmount,
+        });
+
+        const updatedSupplier = await supplier.save();
+        res.json({ message: 'Transaction Added', id: updatedSupplier.orders[updatedSupplier.orders.length - 1].transactions[updatedSupplier.orders[updatedSupplier.orders.length - 1].transactions.length - 1]._id});
+    } catch (err) {
+        res.status(400).json({ message: err.message });
     }
-    catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-}
-);
+});
 
 module.exports = router;
