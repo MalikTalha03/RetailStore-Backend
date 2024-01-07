@@ -1,46 +1,70 @@
-const moongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-const supplierSchema = new moongoose.Schema({
-    id: {
+const orderDetailsSchema = new mongoose.Schema({
+    productid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
+    },
+    qty: {
         type: Number,
-        unique: true
+        required: true,
     },
-    name: {
-        type: String,
-        required: [true, 'Please enter supplier name']
-    },
-    contact: {
-        type: String,
-        required: [true, 'Please enter supplier contact']
-    },
-    address: {
-        type: String,
-        required: [true, 'Please enter supplier address']
+    unitPrice: {
+        type: Number,
+        required: true,
     },
 });
 
-supplierSchema.pre('save', function(next) {
-    if(!this.id){
-        try {
-            const result = this.constructor.find().sort({ id: -1 }).limit(1);
-            if(result.length > 0){
-                this.id = result[0].id + 1;
-            }
-            else{
-                this.id = 1;
-            }
-            next();
-        } 
-        catch (error) {
-            console.error(error);
-            next(error);
-        }
-    }
-    else{
-        next();
-    }
-}
-);
+const transactionSchema = new mongoose.Schema({
+    transactionType: {
+        type: String,
+        enum: ['Credit', 'Cash', 'Bank Transfer'],
+        required: true,
+    },
+    transactionDate: {
+        type: Date,
+        required: true,
+    },
+    totalAmount: {
+        type: Number,
+        required: true,
+    },
+});
 
-const Supplier = moongoose.model('Supplier', supplierSchema);
+const orderSchema = new mongoose.Schema({
+    orderDate: {
+        type: Date,
+        required: true,
+    },
+    totalAmount: {
+        type: Number,
+        required: true,
+    },
+    paymentStatus: {
+        type: String,
+        required: true,
+    },
+    orderDetails: [orderDetailsSchema],
+    transactions: [transactionSchema], // Include transactions in the order schema
+});
+
+const supplierSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Please enter supplier name'],
+    },
+    contact: {
+        type: String,
+        required: [true, 'Please enter supplier contact'],
+    },
+    address: {
+        type: String,
+        required: [true, 'Please enter supplier address'],
+    },
+    orders: [orderSchema],
+});
+
+const Supplier = mongoose.model('Supplier', supplierSchema);
+
 module.exports = Supplier;
