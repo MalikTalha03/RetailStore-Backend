@@ -1,10 +1,61 @@
 const mongoose = require('mongoose');
 
-const customerSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        unique: true
+const orderDetailsSchema = new mongoose.Schema({
+    productid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
     },
+    qty: {
+        type: Number,
+        required: true,
+    },
+    unitPrice: {
+        type: Number,
+        required: true,
+    },
+});
+
+const transactionSchema = new mongoose.Schema({
+    transactionType: {
+        type: String,
+        enum: ['Credit', 'Cash', 'Bank Transfer'],
+        required: true,
+    },
+    transactionDate: {
+        type: Date,
+        required: true,
+    },
+    totalAmount: {
+        type: Number,
+        required: true,
+    },
+});
+
+const orderSchema = new mongoose.Schema({
+    customerid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Customer',
+        required: true,
+    },
+    employeeid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee',
+        required: true,
+    },
+    orderDate: {
+        type: Date,
+        required: true,
+    },
+    paymentStatus: {
+        type: String,
+        required: true,
+    },
+    orderDetails: [orderDetailsSchema],
+    transactions: [transactionSchema], // Include transactions in the order schema
+});
+
+const customerSchema = new mongoose.Schema({
     firstname: {
         type: String,
         required: [true, 'Please enter customer first name']
@@ -17,30 +68,8 @@ const customerSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please enter customer contact']
     },
+    orders: [orderSchema],
 });
-
-customerSchema.pre('save', function(next) {
-    if(!this.id){
-        try {
-            const result = this.constructor.find().sort({ id: -1 }).limit(1);
-            if(result.length > 0){
-                this.id = result[0].id + 1;
-            }
-            else{
-                this.id = 1;
-            }
-            next();
-        } 
-        catch (error) {
-            console.error(error);
-            next(error);
-        }
-    }
-    else{
-        next();
-    }
-}
-);
 
 const Customer = mongoose.model('Customer', customerSchema);
 module.exports = Customer;
