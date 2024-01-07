@@ -26,7 +26,6 @@ router.get('/:id', async(req, res) => {
 
 router.post('/',isAdmin, async (req, res) => {
     const product = new ProductModel({
-        id: req.body.id,
         name: req.body.name,
         price: req.body.price,
         category: req.body.category,
@@ -35,7 +34,8 @@ router.post('/',isAdmin, async (req, res) => {
     });
     try {
         const newProduct = await product.save();
-        res.status(201).json(newProduct);
+        res.status(201).json({message: "Product added successfully",
+    id : newProduct.id });
     }
     catch (err) {
         res.status(400).json({ message: err.message });
