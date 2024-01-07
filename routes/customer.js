@@ -1,70 +1,102 @@
 const express = require('express');
 const router = express.Router();
-const CustomerModel = require('../models/customer');
+const Customer = require('../models/customer');
 
+// Get all customers
 router.get('/', async (req, res) => {
     try {
-        const customers = await CustomerModel.find();
+        const customers = await Customer.find();
         res.send(customers);
-    }
-    catch (err) {
+    } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-router.get('/:id', async(req, res) => {
-    try {
-        const customer = await CustomerModel.find({ id: req.params.id });
-        res.send(customer);
-    }
-    catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
+// Post customer information
 router.post('/', async (req, res) => {
-    const customer = new CustomerModel({
-        id: req.body.id,
+    const customer = new Customer({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
-        contact: req.body.contact
+        contact: req.body.contact,
     });
+
     try {
         const newCustomer = await customer.save();
-        res.status(201).json(newCustomer);
-    }
-    catch (err) {
+        res.status(201).json({ message: 'Customer Added', id: newCustomer._id });
+    } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
-router.patch('/:id', async (req, res) => {
+// Patch route for adding an order
+router.patch('/:id/orders', async (req, res) => {
     try {
-        const customer = await CustomerModel.find({ id: req.params.id });
-        if (req.body.firstname) {
-            customer.firstname = req.body.firstname;
+        const customer = await Customer.findById(req.params.id);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
         }
-        if (req.body.lastname) {
-            customer.lastname = req.body.lastname;
-        }
-        if (req.body.contact) {
-            customer.contact = req.body.contact;
-        }
+
+        customer.orders.push({
+            orderDate: req.body.orderDate,
+            paymentStatus: req.body.paymentStatus,
+        });
+
         const updatedCustomer = await customer.save();
-        res.json(updatedCustomer);
-    }
-    catch (err) {
+        res.json({ message: 'Order Added', id: updatedCustomer.orders[updatedCustomer.orders.length - 1]._id });
+    } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
 
-router.delete('/:id', async (req, res) => {
+// Patch route for adding order details
+router.patch('/:id/orders/:orderId/details', async (req, res) => {
     try {
-        const customer = await CustomerModel.findOneAndDelete({ id: req.params.id });
-        res.json({ message: `Customer ${customer.firstname} ${customer.lastname} has been deleted` });
+        const customer = await Customer.findById(req.params.id);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+
+        const order = customer.orders.id(req.params.orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        order.orderDetails.push({
+            productid: req.body.productid,
+            qty: req.body.qty,
+            unitPrice: req.body.unitPrice,
+        });
+
+        const updatedCustomer = await customer.save();
+        res.json({ message: 'Order Details Added', id: updatedCustomer.orders[updatedCustomer.orders.length - 1].orderDetails[updatedCustomer.orders[updatedCustomer.orders.length - 1].orderDetails.length - 1]._id });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
     }
-    catch (err) {
-        res.status(500).json({ message: err.message });
+});
+
+// Patch route for adding transactions
+router.patch('/:id/orders/:orderId/transactions', async (req, res) => {
+    try {
+        const customer = await Customer.findById(req.params.id);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+
+        const order = customer.orders.id(req.params.orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        order.transactions.push({
+            transactionType: req.body.transactionType,
+            transactionDate: req.body.transactionDate,
+            totalAmount: req.body.totalAmount,
+        });
+
+        const updatedCustomer = await customer.save();
+        res.json({ message: 'Transaction Added', id: updatedCustomer.orders[updatedCustomer.orders.length - 1].transactions[updatedCustomer.orders[updatedCustomer.orders.length - 1].transactions.length - 1]._id });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
     }
 });
 
