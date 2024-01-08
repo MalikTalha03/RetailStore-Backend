@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const ProductModel = require('../models/product');
 const { isAdmin } = require('../middleware/admin');
+const moongose = require('mongoose');
 
 router.get('/', async (req, res) => {
     try {
@@ -29,16 +30,18 @@ router.post('/',isAdmin, async (req, res) => {
         name: req.body.name,
         price: req.body.price,
         category: req.body.category,
-        supplierID: req.body.supplierID,
+        supplierID:new moongose.Types.ObjectId(req.body.supplierID),
         inventory: req.body.inventory
     });
     try {
         const newProduct = await product.save();
+        console.log(newProduct);
         res.status(201).json({message: "Product added successfully",
-    id : newProduct.id });
+    id : newProduct._id });
     }
     catch (err) {
         res.status(400).json({ message: err.message });
+        console.log(err);
     }
 }
 );
