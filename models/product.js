@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 const categorySchema = require('./category');
+const supplierSchema = require('./supplier');
 const productSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        unique: true
-    },
     name: {
         type: String,
         required: [true, 'Please enter product name']
@@ -19,7 +16,8 @@ const productSchema = new mongoose.Schema({
         required: true,
     },
     supplierID: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Supplier',
         required: [true, 'Please enter supplier ID']
     },
     inventory: {
