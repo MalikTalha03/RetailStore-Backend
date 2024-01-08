@@ -15,7 +15,6 @@ const login = async (req, res,next ) => {
         }
         const position = employee.position;
         try {
-            console.log("position",position);
             if (await bcrypt.compare(password, employee.password)) {
                 const token = jwt.sign({ username: username, position: position }, secret, { expiresIn: '1h' });
                 res.status(200).json({ 
