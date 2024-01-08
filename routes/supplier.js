@@ -6,6 +6,7 @@ const SupplierModel = require('../models/supplier');
 router.get('/', async (req, res) => {
     try {
         const suppliers = await SupplierModel.find();
+        console.log(suppliers)
         res.send(suppliers);
     } catch (err) {
         res.status(500).json({ message: err.message });
