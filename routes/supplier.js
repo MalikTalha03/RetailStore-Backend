@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const SupplierModel = require('../models/supplier');
+const ProductModel = require('../models/product');
+
 
 // Get all suppliers
 router.get('/', async (req, res) => {
@@ -61,18 +63,19 @@ router.patch('/:id/orders/:orderId/details', async (req, res) => {
         if (!supplier) {
             return res.status(404).json({ message: 'Supplier not found' });
         }
-
         const order = supplier.orders.id(req.params.orderId);
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
-
+        const product = await ProductModel.findByIdAndUpdate(req.body.productid, { $inc: { inventory: req.body.qty * -1 } });
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
         order.orderDetails.push({
             productid: req.body.productid,
             qty: req.body.qty,
             unitPrice: req.body.unitPrice,
         });
-
         const updatedSupplier = await supplier.save();
         res.json({ message: 'Order Details Added', id: updatedSupplier.orders[updatedSupplier.orders.length - 1].orderDetails[updatedSupplier.orders[updatedSupplier.orders.length - 1].orderDetails.length - 1]._id});
     } 
@@ -81,7 +84,6 @@ router.patch('/:id/orders/:orderId/details', async (req, res) => {
     }
 });
 
-// Patch route for adding transactions
 router.patch('/:id/orders/:orderId/transactions', async (req, res) => {
     try {
         const supplier = await SupplierModel.findById(req.params.id);
