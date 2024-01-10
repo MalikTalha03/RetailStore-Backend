@@ -6,7 +6,14 @@ const Customer = require('../models/customer');
 router.get('/', async (req, res) => {
     try {
         const customers = await Customer.find();
-        res.send(customers);
+        res.json(customers.map(customer => {
+            return {
+                firstname: customer.firstname,
+                lastname: customer.lastname,
+                contact: customer.contact,
+                _id: customer._id,
+            }
+        }));
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
