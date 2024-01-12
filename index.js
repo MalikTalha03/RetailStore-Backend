@@ -6,7 +6,8 @@ require('dotenv').config();
 const connectionurl = process.env.MONGO_URL;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const {loggedIn} = require('./middleware/auth');
+const {loggedIn} = require('./middleware/auth')
+
 
 const categoryRouter = require('./routes/category');
 const customerRouter = require('./routes/customer');
