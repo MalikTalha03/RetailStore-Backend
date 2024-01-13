@@ -2,10 +2,28 @@ const express = require('express');
 const router = express.Router();
 const EmployeeModel = require('../models/employee');
 const { isAdmin } = require('../middleware/admin');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const secret = process.env.HastString;
+
 router.get('/',isAdmin, async (req, res) => {
     try {
         const employees = await EmployeeModel.find();
         res.send(employees);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+);
+
+router.get('/token/:token', async (req, res) => {
+    try {
+        const token = req.params.token;
+        const decoded = jwt.verify(token, secret);
+        const username = decoded.username;
+        const employee = await EmployeeModel.findOne({ username: username });
+        res.send({id: employee._id});
     }
     catch (err) {
         res.status(500).json({ message: err.message });
