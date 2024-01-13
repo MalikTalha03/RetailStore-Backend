@@ -33,11 +33,6 @@ const transactionSchema = new mongoose.Schema({
 });
 
 const orderSchema = new mongoose.Schema({
-    customerid: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Customer',
-        required: true,
-    },
     employeeid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employee',
