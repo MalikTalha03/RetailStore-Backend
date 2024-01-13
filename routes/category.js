@@ -42,9 +42,8 @@ router.post('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
     try {
         const category = await CategoryModel.find({ id: req.params.id });
-        if (req.body.name) {
-            category.name = req.body.name;
-        }
+        if (!req.body.name) return res.status(400).json({ message: 'Name is required' });
+        category.name = req.body.name;
         const updatedCategory = await category.save();
         res.json(updatedCategory);
     }
