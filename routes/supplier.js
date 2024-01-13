@@ -67,7 +67,7 @@ router.patch('/:id/orders/:orderId/details', async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
-        const product = await ProductModel.findByIdAndUpdate(req.body.productid, { $inc: { inventory: req.body.qty * -1 } });
+        const product = await ProductModel.findByIdAndUpdate(req.body.productid, { $inc: { inventory: req.body.qty, price: req.body.unitPrice } });
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
