@@ -42,7 +42,6 @@ router.patch('/:id/orders', async (req, res) => {
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found' });
         }
-
         customer.orders.push({
             orderDate: req.body.orderDate,
             paymentStatus: req.body.paymentStatus,
