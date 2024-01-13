@@ -46,6 +46,7 @@ router.patch('/:id/orders', async (req, res) => {
         customer.orders.push({
             orderDate: req.body.orderDate,
             paymentStatus: req.body.paymentStatus,
+            employeeid: req.body.employeeid,
         });
 
         const updatedCustomer = await customer.save();
