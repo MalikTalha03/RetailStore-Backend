@@ -57,7 +57,6 @@ const customerSchema = new mongoose.Schema({
     },
     lastname: {
         type: String,
-        required: [true, 'Please enter customer last name']
     },
     contact: {
         type: String,
