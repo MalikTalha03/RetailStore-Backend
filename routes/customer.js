@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
                 firstname: customer.firstname,
                 lastname: customer.lastname,
                 contact: customer.contact,
+                name: customer.firstname + ' ' + customer.lastname,
                 _id: customer._id,
             }
         }));
@@ -19,8 +20,43 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/today', async (req, res) => {
+    try {
+        // Get today's date
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+    
+        const todayOrders = await Customer.aggregate([
+          {
+            $unwind: '$orders',
+          },
+          {
+            $match: {
+              'orders.orderDate': { $gte: today },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              customerName: { $concat: ['$firstname', ' ', { $ifNull: ['$lastname', ''] }] },
+              contact: '$contact',
+              order: '$orders',
+            },
+          },
+        ]);
+    
+        res.json(todayOrders);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+}
+);
+
+
 // Post customer information
 router.post('/', async (req, res) => {
+    console.log(req.body);  
     const customer = new Customer({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -32,6 +68,7 @@ router.post('/', async (req, res) => {
         res.status(201).json({ message: 'Customer Added', id: newCustomer._id });
     } catch (err) {
         res.status(400).json({ message: err.message });
+        console.log(err);
     }
 });
 
