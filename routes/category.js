@@ -26,12 +26,11 @@ router.get('/:id', async(req, res) => {
 
 router.post('/', async (req, res) => {
     const category = new CategoryModel({
-        id: req.body.id,
         name: req.body.name,
     });
     try {
         const newCategory = await category.save();
-        res.status(201).json(newCategory);
+        res.status(201).json({ message: 'New Category has been added' });
     }
     catch (err) {
         res.status(400).json({ message: err.message });
