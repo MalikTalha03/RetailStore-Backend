@@ -6,7 +6,10 @@ const moongose = require('mongoose');
 
 router.get('/', async (req, res) => {
     try {
-        const products = await ProductModel.find();
+        const products = await ProductModel.find().populate({
+            path: 'supplierID',
+            select: 'name'
+        });
         res.send(products);
     }
     catch (err) {
