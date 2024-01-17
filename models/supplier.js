@@ -65,6 +65,20 @@ const supplierSchema = new mongoose.Schema({
     orders: [orderSchema],
 });
 
+orderSchema.pre('save', function (next) {
+    const totalPaidAmount = this.transactions.reduce((total, transaction) => {
+      return total + transaction.totalAmount;
+    }, 0);
+  
+    if (totalPaidAmount >= this.totalAmount) {
+      this.paymentStatus = 'Paid';
+    } else {
+      this.paymentStatus = 'Pending';
+    }
+  
+    next();
+  });
+
 const Supplier = mongoose.model('Supplier', supplierSchema);
 
 module.exports = Supplier;
