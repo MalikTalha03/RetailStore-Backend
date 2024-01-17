@@ -4,6 +4,7 @@ const categorySchema = new moongoose.Schema({
 
     name: {
         type: String,
+        unique: true,
         required: [true, 'Please enter category name']
     },
 });
