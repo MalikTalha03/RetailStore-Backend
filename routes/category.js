@@ -31,12 +31,17 @@ router.post('/', async (req, res) => {
     try {
         const newCategory = await category.save();
         res.status(201).json({ message: 'New Category has been added' });
+    } catch (err) {
+        if (err.code === 11000 && err.keyPattern && err.keyPattern.name === 1) {
+            // Duplicate key error (name already exists)
+            res.status(400).json({ message: 'Category with this name already exists' });
+        } else {
+            // Other errors
+            res.status(400).json({ message: err.message });
+        }
     }
-    catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-}
-);
+});
+
 
 router.patch('/:id', async (req, res) => {
     try {
