@@ -19,6 +19,15 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/orders', async (req, res) => {
+    try {
+        const suppliers = await SupplierModel.find();
+        res.json(suppliers)
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // Post supplier information
 router.post('/', async (req, res) => {
     const supplier = new SupplierModel({
@@ -95,15 +104,17 @@ router.patch('/:id/orders/:orderId/transactions', async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
-
+        if(order.paymentStatus === 'Paid'){
+            return res.status(400).json({ message: 'Order already paid' });
+        }
         order.transactions.push({
             transactionType: req.body.transactionType,
             transactionDate: req.body.transactionDate,
             totalAmount: req.body.totalAmount,
         });
-
+        console.log(order.transactions);
         const updatedSupplier = await supplier.save();
-        res.json({ message: 'Transaction Added', id: updatedSupplier.orders[updatedSupplier.orders.length - 1].transactions[updatedSupplier.orders[updatedSupplier.orders.length - 1].transactions.length - 1]._id});
+        res.json({ message: 'Transaction Added'});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
