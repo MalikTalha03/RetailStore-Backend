@@ -72,7 +72,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Patch route for adding an order
 router.patch('/:id/orders', async (req, res) => {
     try {
         const customer = await Customer.findById(req.params.id);
@@ -92,7 +91,6 @@ router.patch('/:id/orders', async (req, res) => {
     }
 });
 
-// Patch route for adding order details
 router.patch('/:id/orders/:orderId/details', async (req, res) => {
     try {
         const customer = await Customer.findById(req.params.id);
@@ -118,7 +116,6 @@ router.patch('/:id/orders/:orderId/details', async (req, res) => {
     }
 });
 
-// Patch route for adding transactions
 router.patch('/:id/orders/:orderId/transactions', async (req, res) => {
     try {
         const customer = await Customer.findById(req.params.id);
@@ -130,6 +127,14 @@ router.patch('/:id/orders/:orderId/transactions', async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
+        const remainingAmount = order.totalAmount - req.body.totalAmount;
+        if (remainingAmount < 0) {
+            return res.status(400).json({ message: 'Amount exceeds total amount' });
+        }
+        if (remainingAmount === 0) {
+            return res.status(400).json({ message: 'Amount paid in full' });
+        }
+
 
         order.transactions.push({
             transactionType: req.body.transactionType,
