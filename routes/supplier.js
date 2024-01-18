@@ -134,6 +134,15 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
     if (order.paymentStatus === "Paid") {
       return res.status(400).json({ message: "Order already paid" });
     }
+    const totalPaidAmount = order.transactions.reduce((total, transaction) => {
+        return total + transaction.totalAmount;
+      }, 0);
+  
+      const remainingAmount = order.totalAmount - totalPaidAmount;
+  
+      if (req.body.totalAmount > remainingAmount) {
+        return res.status(400).json({ message: "Payment amount exceeds remaining amount" });
+      }
     order.transactions.push({
       transactionType: req.body.transactionType,
       transactionDate: req.body.transactionDate,
