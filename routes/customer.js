@@ -129,6 +129,7 @@ router.patch("/:id/orders/:orderId/details", async (req, res) => {
 });
 
 router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
+  console.log(req.body)
   try {
     const customer = await Customer.findById(req.params.id);
     if (!customer) {
@@ -139,14 +140,21 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-    const remainingAmount = order.totalAmount - req.body.totalAmount;
-    if (remainingAmount < 0) {
-      return res.status(400).json({ message: "Amount exceeds total amount" });
-    }
-    if (remainingAmount === 0) {
-      return res.status(400).json({ message: "Amount paid in full" });
+    const remainingAmount = order.orderDetails.reduce(
+      (acc, curr) => acc + curr.qty * curr.unitPrice,
+      0
+    );
+    if (remainingAmount < req.body.totalAmount) {
+      return res
+        .status(400)
+        .json({ message: "Amount paid exceeds total amount" });
     }
 
+    if (order.paymentStatus === "Paid") {
+      return res.status(400).json({ message: "Amount paid in full" });
+    }
+    console.log(remainingAmount);
+    console.log(order.totalAmount);
     order.transactions.push({
       transactionType: req.body.transactionType,
       transactionDate: req.body.transactionDate,
@@ -156,14 +164,10 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
     const updatedCustomer = await customer.save();
     res.json({
       message: "Transaction Added",
-      id: updatedCustomer.orders[updatedCustomer.orders.length - 1]
-        .transactions[
-        updatedCustomer.orders[updatedCustomer.orders.length - 1].transactions
-          .length - 1
-      ]._id,
-    });
+    }).status(200);
   } catch (err) {
     res.status(400).json({ message: err.message });
+    console.log(err);
   }
 });
 
