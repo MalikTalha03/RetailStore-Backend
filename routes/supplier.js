@@ -120,7 +120,7 @@ router.patch("/:id/orders/:orderId/details", async (req, res) => {
 });
 
 router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
-    console.log(req.body);
+  console.log(req.body);
   try {
     const supplier = await SupplierModel.findById(req.params.id);
     if (!supplier) {
@@ -135,14 +135,16 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
       return res.status(400).json({ message: "Order already paid" });
     }
     const totalPaidAmount = order.transactions.reduce((total, transaction) => {
-        return total + transaction.totalAmount;
-      }, 0);
-  
-      const remainingAmount = order.totalAmount - totalPaidAmount;
-  
-      if (req.body.totalAmount > remainingAmount) {
-        return res.status(400).json({ message: "Payment amount exceeds remaining amount" });
-      }
+      return total + transaction.totalAmount;
+    }, 0);
+
+    const remainingAmount = order.totalAmount - totalPaidAmount;
+
+    if (req.body.totalAmount > remainingAmount) {
+      return res
+        .status(400)
+        .json({ message: "Payment amount exceeds remaining amount" });
+    }
     order.transactions.push({
       transactionType: req.body.transactionType,
       transactionDate: req.body.transactionDate,

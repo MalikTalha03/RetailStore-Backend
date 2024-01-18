@@ -1,94 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API View - Home</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
     <p>Please use below routes to access the API</p>
     <h3>Public Routes</h3>
     <ul class="routes">
-        <li class="main">
-            <strong>Login</strong>
-            <ul>
-                <li>POST <a href="/login" title="POST">/login</a></li>
-            </ul>
-        </li>
-        <li class="main">
-            <strong>Register</strong>
-            <ul>
-                <li>POST <a href="/register" title="POST">/register</a></li>
-            </ul>
-        </li>
+      <li class="main">
+        <strong>Login</strong>
+        <ul>
+          <li>POST <a href="/login" title="POST">/login</a></li>
+        </ul>
+      </li>
+      <li class="main">
+        <strong>Register</strong>
+        <ul>
+          <li>POST <a href="/register" title="POST">/register</a></li>
+        </ul>
+      </li>
     </ul>
     <h3>Protected Routes</h3>
     <ul class="routes">
-        <li class="main">
-            <strong>Products</strong>
-            <ul>
-                <li>GET <a href="/products" title="GET">/products</a></li>
-                <li>GET <a href="/products/:id" title="GET">/products/:id</a></li>
-                <li>POST <a href="/products" title="POST">/products</a></li>
-                <li>PUT <a href="/products/:id" title="PUT">/products/:id</a></li> 
-                <li>DELETE <a href="/products/:id" title="DELETE">/products/:id</a></li>
-            </ul>
-        </li>
-        <li class="main">
-            <strong>Category</strong>
-            <ul>
-                <li>GET <a href="/category" title="GET">/category</a></li>
-                <li>GET <a href="/category/:id" title="GET">/category/:id</a></li>
-                <li>POST <a href="/category" title="POST">/category</a></li>
-                <li>PUT <a href="/category/:id" title="PUT">/category/:id</a></li> 
-                <li>DELETE <a href="/category/:id" title="DELETE">/category/:id</a></li>
-            </ul>
-        </li>
-        <li class="main">
-            <strong>Employee</strong>
-            <ul>
-                <li>GET <a href="/employee" title="GET">/employee</a></li>
-                <li>GET <a href="/employee/:id" title="GET">/employee/:id</a></li>
-                <li>POST <a href="/employee" title="POST">/employee</a></li>
-                <li>PUT <a href="/employee/:id" title="PUT">/employee/:id</a></li> 
-                <li>DELETE <a href="/employee/:id" title="DELETE">/employee/:id</a></li>
-            </ul>
-        </li>
-        <li class="main">
-            <strong>Credit Customers</strong>
-            <ul>
-                <li>GET <a href="/creditcustomer" title="GET">/creditcustomer</a></li>
-                <li>GET <a href="/creditcustomer/:id" title="GET">/creditcustomer/:id</a></li>
-                <li>POST <a href="/creditcustomer" title="POST">/creditcustomer</a></li>
-                <li>PUT <a href="/creditcustomer/:id" title="PUT">/creditcustomer/:id</a></li> 
-                <li>DELETE <a href="/creditcustomer/:id" title="DELETE">/creditcustomer/:id</a></li>
-            </ul>
-        </li>
-        <li class="main">
-            <strong>Customer</strong>
-            <ul>
-                <li>GET <a href="/customer" title="GET">/customer</a></li>
-                <li>POST <a href="/customer" title="POST">/customer</a></li>
-                <li>PATCH <a href="/customer/:id/orders" title="PATCH">/customer/:id/orders</a></li>
-                <li>PATCH <a href="/customer/:id/orders/:orderId/details" title="PATCH">/customer/:id/orders/:orderId/details</a></li>
-                <li>PATCH <a href="/customer/:id/orders/:orderId/transactions" title="PATCH">/customer/:id/orders/:orderId/transactions</a></li>
-            </ul>
-        </li>
+      <li class="main">
+        <strong>Products</strong>
+        <ul>
+          <li>GET <a href="/products" title="GET">/products</a></li>
+          <li>GET <a href="/products/:id" title="GET">/products/:id</a></li>
+          <li>POST <a href="/products" title="POST">/products</a></li>
+          <li>PUT <a href="/products/:id" title="PUT">/products/:id</a></li>
+          <li>
+            DELETE <a href="/products/:id" title="DELETE">/products/:id</a>
+          </li>
+        </ul>
+      </li>
+      <li class="main">
+        <strong>Category</strong>
+        <ul>
+          <li>GET <a href="/category" title="GET">/category</a></li>
+          <li>GET <a href="/category/:id" title="GET">/category/:id</a></li>
+          <li>POST <a href="/category" title="POST">/category</a></li>
+          <li>PUT <a href="/category/:id" title="PUT">/category/:id</a></li>
+          <li>
+            DELETE <a href="/category/:id" title="DELETE">/category/:id</a>
+          </li>
+        </ul>
+      </li>
+      <li class="main">
+        <strong>Employee</strong>
+        <ul>
+          <li>GET <a href="/employee" title="GET">/employee</a></li>
+          <li>GET <a href="/employee/:id" title="GET">/employee/:id</a></li>
+          <li>POST <a href="/employee" title="POST">/employee</a></li>
+          <li>PUT <a href="/employee/:id" title="PUT">/employee/:id</a></li>
+          <li>
+            DELETE <a href="/employee/:id" title="DELETE">/employee/:id</a>
+          </li>
+        </ul>
+      </li>
+      <li class="main">
+        <strong>Credit Customers</strong>
+        <ul>
+          <li>GET <a href="/creditcustomer" title="GET">/creditcustomer</a></li>
+          <li>
+            GET
+            <a href="/creditcustomer/:id" title="GET">/creditcustomer/:id</a>
+          </li>
+          <li>
+            POST <a href="/creditcustomer" title="POST">/creditcustomer</a>
+          </li>
+          <li>
+            PUT
+            <a href="/creditcustomer/:id" title="PUT">/creditcustomer/:id</a>
+          </li>
+          <li>
+            DELETE
+            <a href="/creditcustomer/:id" title="DELETE">/creditcustomer/:id</a>
+          </li>
+        </ul>
+      </li>
+      <li class="main">
+        <strong>Customer</strong>
+        <ul>
+          <li>GET <a href="/customer" title="GET">/customer</a></li>
+          <li>POST <a href="/customer" title="POST">/customer</a></li>
+          <li>
+            PATCH
+            <a href="/customer/:id/orders" title="PATCH"
+              >/customer/:id/orders</a
+            >
+          </li>
+          <li>
+            PATCH
+            <a href="/customer/:id/orders/:orderId/details" title="PATCH"
+              >/customer/:id/orders/:orderId/details</a
+            >
+          </li>
+          <li>
+            PATCH
+            <a href="/customer/:id/orders/:orderId/transactions" title="PATCH"
+              >/customer/:id/orders/:orderId/transactions</a
+            >
+          </li>
+        </ul>
+      </li>
 
-        <!-- Supplier Routes -->
-        <li class="main">
-            <strong>Supplier</strong>
-            <ul>
-                <li>GET <a href="/supplier" title="GET">/supplier</a></li>
-                <li>POST <a href="/supplier" title="POST">/supplier</a></li>
-                <li>PATCH <a href="/supplier/:id/orders" title="PATCH">/supplier/:id/orders</a></li>
-                <li>PATCH <a href="/supplier/:id/orders/:orderId/details" title="PATCH">/supplier/:id/orders/:orderId/details</a></li>
-                <li>PATCH <a href="/supplier/:id/orders/:orderId/transactions" title="PATCH">/supplier/:id/orders/:orderId/transactions</a></li>
-            </ul>
-        </li>
-
+      <!-- Supplier Routes -->
+      <li class="main">
+        <strong>Supplier</strong>
+        <ul>
+          <li>GET <a href="/supplier" title="GET">/supplier</a></li>
+          <li>POST <a href="/supplier" title="POST">/supplier</a></li>
+          <li>
+            PATCH
+            <a href="/supplier/:id/orders" title="PATCH"
+              >/supplier/:id/orders</a
+            >
+          </li>
+          <li>
+            PATCH
+            <a href="/supplier/:id/orders/:orderId/details" title="PATCH"
+              >/supplier/:id/orders/:orderId/details</a
+            >
+          </li>
+          <li>
+            PATCH
+            <a href="/supplier/:id/orders/:orderId/transactions" title="PATCH"
+              >/supplier/:id/orders/:orderId/transactions</a
+            >
+          </li>
+        </ul>
+      </li>
     </ul>
-      
-</body>
+  </body>
 </html>
