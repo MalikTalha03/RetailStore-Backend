@@ -22,6 +22,15 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/orders", async (req, res) => {
+  try {
+    const customers = await Customer.find();
+    res.json(customers);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.get("/today", async (req, res) => {
   try {
     // Get today's date
