@@ -65,5 +65,18 @@ const customerSchema = new mongoose.Schema({
     orders: [orderSchema],
 });
 
+customerSchema.pre('save', function (next) {
+    this.orders.forEach((order) => {
+        const totalPaidAmount = order.transactions.reduce((total, transaction) => {
+            return total + transaction.totalAmount;
+        }, 0);
+
+        if (totalPaidAmount === order.totalAmount) {
+            order.paymentStatus = 'Paid';
+        }
+    });
+    next();
+});
+
 const Customer = mongoose.model('Customer', customerSchema);
 module.exports = Customer;
