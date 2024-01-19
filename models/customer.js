@@ -19,7 +19,7 @@ const orderDetailsSchema = new mongoose.Schema({
 const transactionSchema = new mongoose.Schema({
   transactionType: {
     type: String,
-    enum: ["Credit", "Cash", "Bank Transfer"],
+    enum: ["Credit", "Cash", "Bank Transfer","Refund"],
     required: true,
   },
   transactionDate: {
