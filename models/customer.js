@@ -67,22 +67,23 @@ const customerSchema = new mongoose.Schema({
 
 customerSchema.pre("save", function (next) {
   this.orders.forEach((order) => {
+    if (order.orderDetails.length > 0 && order.transactions.length > 0) {
       const totalPaidAmount = order.transactions.reduce((total, transaction) => {
-          return total + transaction.totalAmount;
+        return total + transaction.totalAmount;
       }, 0);
 
       const totalOrderValue = order.orderDetails.reduce((total, orderDetail) => {
-          return total + orderDetail.qty * orderDetail.unitPrice;
+        return total + orderDetail.qty * orderDetail.unitPrice;
       }, 0);
 
-      if (totalPaidAmount >= totalOrderValue) {
-          order.paymentStatus = "Paid";
-      } else {
-          order.paymentStatus = "Pending";
-      }
+      order.paymentStatus = totalPaidAmount >= totalOrderValue ? "Paid" : "Pending";
+    } else {
+      order.paymentStatus = "Pending";
+    }
   });
   next();
 });
+
 
 
 const Customer = mongoose.model("Customer", customerSchema);
