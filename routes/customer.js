@@ -182,33 +182,36 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
 
 router.patch("/:id/orders/:orderId/details", async (req, res) => {
   try {
-    const customer = await Customer.findById(req.params.id);
-    if (!customer) {
-      return res.status(404).json({ message: "Customer not found" });
+    const { id, orderId } = req.params;
+
+    const updatedCustomer = await Customer.findOneAndUpdate(
+      { _id: id, "orders._id": orderId },
+      {
+        $push: {
+          "orders.$.orderDetails": {
+            productid: req.body.productid,
+            qty: req.body.qty,
+            unitPrice: req.body.unitPrice,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedCustomer) {
+      return res.status(404).json({ message: "Customer or Order not found" });
     }
 
-    const order = customer.orders.id(req.params.orderId);
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
+    const newOrder = updatedCustomer.orders.find((order) => order._id.toString() === orderId);
+    const newOrderDetails = newOrder.orderDetails;
 
-    order.orderDetails.push({
-      productid: req.body.productid,
-      qty: req.body.qty,
-      unitPrice: req.body.unitPrice,
-    });
-
-    const updatedCustomer = await customer.save();
     res.json({
       message: "Order Details Added",
-      id: updatedCustomer.orders[updatedCustomer.orders.length - 1]
-        .orderDetails[
-        updatedCustomer.orders[updatedCustomer.orders.length - 1].orderDetails
-          .length - 1
-      ]._id,
+      id: newOrderDetails[newOrderDetails.length - 1]._id,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
+    console.error(err);
   }
 });
 
