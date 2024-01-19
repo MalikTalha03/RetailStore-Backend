@@ -109,6 +109,7 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
     }
 
     const order = customer.orders.id(req.params.orderId);
+    const orderDetails = order.orderDetails;
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
@@ -129,11 +130,32 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
       (total, orderDetail) => total + orderDetail.qty * orderDetail.unitPrice,
       0
     );
+    const detail = req.body.orderDetails;
+
+orderDetails.forEach(async (orderDetail) => {
+  const correspondingDetail = detail.find((detail) => orderDetail.productid.toString() === detail.productid);
+
+  if (correspondingDetail) {
+    orderDetail.qty -= correspondingDetail.qty;
+
+    const product = await Product.findById(correspondingDetail.productid);
+    product.inventory += orderDetail.qty;
+    console.log(product.inventory);
+    console.log(correspondingDetail.qty);
+    console.log(orderDetail.qty);
+
+    await product.save();
+  }
+});
+
+   
 
     const refundAmount = originalTotalPaidAmount - updatedTotalOrderValue;
 
     if (refundAmount <= 0) {
-      return res.status(400).json({ message: "Refund amount must be greater than 0" });
+      return res
+        .status(400)
+        .json({ message: "Refund amount must be greater than 0" });
     }
 
     order.transactions.push({
@@ -166,8 +188,6 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
   }
 });
 
-
-
 router.patch("/:id/orders/:orderId/details", async (req, res) => {
   try {
     const { id, orderId } = req.params;
@@ -187,20 +207,26 @@ router.patch("/:id/orders/:orderId/details", async (req, res) => {
       return res.status(404).json({ message: "Customer or Order not found" });
     }
 
-    const updatedOrder = updatedCustomer.orders.find(order => order._id.toString() === orderId);
+    const updatedOrder = updatedCustomer.orders.find(
+      (order) => order._id.toString() === orderId
+    );
 
-    const updatedProducts = await Promise.all(updatedOrder.orderDetails.map(async (orderDetail) => {
-      const product = await Product.findById(orderDetail.productid);
-      if (!product) {
-        throw new Error(`Product not found with id: ${orderDetail.productid}`);
-      }
+    const updatedProducts = await Promise.all(
+      updatedOrder.orderDetails.map(async (orderDetail) => {
+        const product = await Product.findById(orderDetail.productid);
+        if (!product) {
+          throw new Error(
+            `Product not found with id: ${orderDetail.productid}`
+          );
+        }
 
-      product.inventory -= orderDetail.qty;
+        product.inventory -= orderDetail.qty;
 
-      await product.save();
+        await product.save();
 
-      return product;
-    }));
+        return product;
+      })
+    );
 
     const newOrderDetails = updatedOrder.orderDetails;
     res.json({
@@ -243,9 +269,11 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
     });
 
     const updatedCustomer = await customer.save();
-    res.json({
-      message: "Transaction Added",
-    }).status(200);
+    res
+      .json({
+        message: "Transaction Added",
+      })
+      .status(200);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
