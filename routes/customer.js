@@ -33,7 +33,6 @@ router.get("/orders", async (req, res) => {
 
 router.get("/today", async (req, res) => {
   try {
-    // Get today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -104,6 +103,82 @@ router.patch("/:id/orders", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+router.patch("/:id/orders/:orderId/refund", async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    const order = customer.orders.id(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const { refundDate } = req.body;
+
+    // Calculate the original total amount paid for the order
+    const originalTotalPaidAmount = order.transactions.reduce(
+      (total, transaction) => total + transaction.totalAmount,
+      0
+    );
+
+    // Calculate the original total order value
+    const originalTotalOrderValue = order.orderDetails.reduce(
+      (total, orderDetail) => total + orderDetail.qty * orderDetail.unitPrice,
+      0
+    );
+
+    // Calculate the updated total order value
+    const updatedTotalOrderValue = req.body.orderDetails.reduce(
+      (total, orderDetail) => total + orderDetail.qty * orderDetail.unitPrice,
+      0
+    );
+
+    // Calculate the refund amount based on the changes in order details
+    const refundAmount = originalTotalPaidAmount - updatedTotalOrderValue;
+
+    // Validate the refund amount
+    if (refundAmount <= 0) {
+      return res.status(400).json({ message: "Refund amount must be greater than 0" });
+    }
+
+    // Add a refund transaction
+    order.transactions.push({
+      transactionType: "Refund",
+      transactionDate: refundDate,
+      totalAmount: refundAmount,
+    });
+
+    // Update order details with the new data
+    order.orderDetails = req.body.orderDetails;
+
+    // Update order payment status based on the remaining amount
+    const remainingRefundAmount = originalTotalPaidAmount - refundAmount;
+
+    if (remainingRefundAmount >= originalTotalOrderValue) {
+      order.paymentStatus = "Paid";
+    } else {
+      order.paymentStatus = "Pending";
+    }
+
+    const updatedCustomer = await customer.save();
+
+    // Calculate the amount to be returned to the customer
+    const amountToReturn = originalTotalPaidAmount - remainingRefundAmount;
+
+    res.json({
+      message: "Refund processed successfully",
+      updatedCustomer,
+      amountToReturn,
+    });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+
 
 router.patch("/:id/orders/:orderId/details", async (req, res) => {
   try {
