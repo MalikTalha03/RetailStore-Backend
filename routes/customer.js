@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Customer = require("../models/customer");
+const Product = require("../models/product");
 
-// Get all customers
 router.get("/", async (req, res) => {
   try {
     const customers = await Customer.find();
@@ -59,14 +59,11 @@ router.get("/today", async (req, res) => {
 
     res.json(todayOrders);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-// Post customer information
 router.post("/", async (req, res) => {
-  console.log(req.body);
   const customer = new Customer({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -118,43 +115,35 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
 
     const { refundDate } = req.body;
 
-    // Calculate the original total amount paid for the order
     const originalTotalPaidAmount = order.transactions.reduce(
       (total, transaction) => total + transaction.totalAmount,
       0
     );
 
-    // Calculate the original total order value
     const originalTotalOrderValue = order.orderDetails.reduce(
       (total, orderDetail) => total + orderDetail.qty * orderDetail.unitPrice,
       0
     );
 
-    // Calculate the updated total order value
     const updatedTotalOrderValue = req.body.orderDetails.reduce(
       (total, orderDetail) => total + orderDetail.qty * orderDetail.unitPrice,
       0
     );
 
-    // Calculate the refund amount based on the changes in order details
     const refundAmount = originalTotalPaidAmount - updatedTotalOrderValue;
 
-    // Validate the refund amount
     if (refundAmount <= 0) {
       return res.status(400).json({ message: "Refund amount must be greater than 0" });
     }
 
-    // Add a refund transaction
     order.transactions.push({
       transactionType: "Refund",
       transactionDate: refundDate,
       totalAmount: refundAmount,
     });
 
-    // Update order details with the new data
     order.orderDetails = req.body.orderDetails;
 
-    // Update order payment status based on the remaining amount
     const remainingRefundAmount = originalTotalPaidAmount - refundAmount;
 
     if (remainingRefundAmount >= originalTotalOrderValue) {
@@ -165,7 +154,6 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
 
     const updatedCustomer = await customer.save();
 
-    // Calculate the amount to be returned to the customer
     const amountToReturn = originalTotalPaidAmount - remainingRefundAmount;
 
     res.json({
@@ -183,16 +171,13 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
 router.patch("/:id/orders/:orderId/details", async (req, res) => {
   try {
     const { id, orderId } = req.params;
+    const { productid, qty, unitPrice } = req.body;
 
     const updatedCustomer = await Customer.findOneAndUpdate(
       { _id: id, "orders._id": orderId },
       {
         $push: {
-          "orders.$.orderDetails": {
-            productid: req.body.productid,
-            qty: req.body.qty,
-            unitPrice: req.body.unitPrice,
-          },
+          "orders.$.orderDetails": { productid, qty, unitPrice },
         },
       },
       { new: true }
@@ -202,21 +187,32 @@ router.patch("/:id/orders/:orderId/details", async (req, res) => {
       return res.status(404).json({ message: "Customer or Order not found" });
     }
 
-    const newOrder = updatedCustomer.orders.find((order) => order._id.toString() === orderId);
-    const newOrderDetails = newOrder.orderDetails;
+    const updatedOrder = updatedCustomer.orders.find(order => order._id.toString() === orderId);
 
+    const updatedProducts = await Promise.all(updatedOrder.orderDetails.map(async (orderDetail) => {
+      const product = await Product.findById(orderDetail.productid);
+      if (!product) {
+        throw new Error(`Product not found with id: ${orderDetail.productid}`);
+      }
+
+      product.inventory -= orderDetail.qty;
+
+      await product.save();
+
+      return product;
+    }));
+
+    const newOrderDetails = updatedOrder.orderDetails;
     res.json({
       message: "Order Details Added",
       id: newOrderDetails[newOrderDetails.length - 1]._id,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
-    console.error(err);
   }
 });
 
 router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
-  console.log(req.body)
   try {
     const customer = await Customer.findById(req.params.id);
     if (!customer) {
@@ -240,8 +236,6 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
     if (order.paymentStatus === "Paid") {
       return res.status(400).json({ message: "Amount paid in full" });
     }
-    console.log(remainingAmount);
-    console.log(order.totalAmount);
     order.transactions.push({
       transactionType: req.body.transactionType,
       transactionDate: req.body.transactionDate,
@@ -254,7 +248,6 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
     }).status(200);
   } catch (err) {
     res.status(400).json({ message: err.message });
-    console.log(err);
   }
 });
 
