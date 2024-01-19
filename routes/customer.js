@@ -132,23 +132,18 @@ router.patch("/:id/orders/:orderId/refund", async (req, res) => {
     );
     const detail = req.body.orderDetails;
 
-orderDetails.forEach(async (orderDetail) => {
-  const correspondingDetail = detail.find((detail) => orderDetail.productid.toString() === detail.productid);
+    orderDetails.forEach(async (orderDetail) => {
+      const correspondingDetail = detail.find(
+        (detail) => orderDetail.productid.toString() === detail.productid
+      );
 
-  if (correspondingDetail) {
-    orderDetail.qty -= correspondingDetail.qty;
-
-    const product = await Product.findById(correspondingDetail.productid);
-    product.inventory += orderDetail.qty;
-    console.log(product.inventory);
-    console.log(correspondingDetail.qty);
-    console.log(orderDetail.qty);
-
-    await product.save();
-  }
-});
-
-   
+      if (correspondingDetail) {
+        orderDetail.qty -= correspondingDetail.qty;
+        const product = await Product.findById(correspondingDetail.productid);
+        product.inventory += orderDetail.qty;
+        await product.save();
+      }
+    });
 
     const refundAmount = originalTotalPaidAmount - updatedTotalOrderValue;
 
