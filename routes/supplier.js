@@ -157,4 +157,24 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
   }
 });
 
+router.patch("/:id", async (req, res) => {
+  try {
+    const supplier = await SupplierModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        contact: req.body.contact,
+        address: req.body.address,
+      },
+      { new: true }
+    );
+    res.json({ message: "Supplier Updated" });
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found" });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;
