@@ -285,6 +285,9 @@ router.patch('/:id', async (req, res) => {
       },
       { new: true }
     );
+    if(!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
     res.json({ message: "Customer Updated" }).status(200);
   } catch (err) {
     res.status(400).json({ message: err.message });
