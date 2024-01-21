@@ -274,4 +274,21 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
   }
 });
 
+router.patch('/:id', async (req, res) => {
+  try {
+    const customer = await Customer.findByIdAndUpdate(
+      req.params.id,
+      {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        contact: req.body.contact,
+      },
+      { new: true }
+    );
+    res.json({ message: "Customer Updated" }).status(200);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;
