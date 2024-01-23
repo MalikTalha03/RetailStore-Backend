@@ -43,7 +43,7 @@ router.post("/", isAdmin, async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id",isAdmin, async (req, res) => {
   try {
     const product = await ProductModel.find({ id: req.params.id });
     if (req.body.name) {
@@ -68,7 +68,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",isAdmin, async (req, res) => {
   try {
     const product = await ProductModel.findOneAndDelete({ id: req.params.id });
     res.json({ message: `Product ${product.name} has been deleted` });
