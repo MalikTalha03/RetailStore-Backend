@@ -69,7 +69,14 @@ router.post("/", async (req, res) => {
     lastname: req.body.lastname,
     contact: req.body.contact,
   });
-
+  const cust = await Customer.findOne({
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    contact: req.body.contact,
+  });
+  if (cust) {
+    return res.status(201).json({ id: cust._id });
+  }
   try {
     const newCustomer = await customer.save();
     res.status(201).json({ message: "Customer Added", id: newCustomer._id });
