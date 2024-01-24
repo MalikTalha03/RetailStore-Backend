@@ -28,7 +28,7 @@ app.use("/auth/register", isAdmin, regRouter);
 app.use("/auth/login", loginRouter);
 app.use("/products", productRouter);
 app.use("/category", loggedIn, categoryRouter);
-app.use("/customer", loggedIn, customerRouter);
+app.use("/customer", customerRouter);
 app.use("/creditcustomer", loggedIn, creditCustomerRouter);
 app.use("/supplier", loggedIn, supplierRouter);
 app.use("/employee", loggedIn, employeeRouter);
