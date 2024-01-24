@@ -85,10 +85,20 @@ router.patch("/:id/orders", async (req, res) => {
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
     }
+    let employeeid = req.body.employeeid;
+    if (employeeid === undefined) {
+      employeeid = null;
+    }
+    let orderType = req.body.orderType;
+    if (req.body.orderType !== "Online") {
+      orderType = "Shop";
+    }
+
     customer.orders.push({
       orderDate: req.body.orderDate,
       paymentStatus: req.body.paymentStatus,
       employeeid: req.body.employeeid,
+      orderType: orderType,
     });
 
     const updatedCustomer = await customer.save();
@@ -274,7 +284,7 @@ router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
   }
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
     const customer = await Customer.findByIdAndUpdate(
       req.params.id,
@@ -285,7 +295,7 @@ router.patch('/:id', async (req, res) => {
       },
       { new: true }
     );
-    if(!customer) {
+    if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
     }
     res.json({ message: "Customer Updated" }).status(200);

@@ -36,7 +36,6 @@ const orderSchema = new mongoose.Schema({
   employeeid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employee",
-    required: true,
   },
   orderDate: {
     type: Date,
@@ -46,8 +45,11 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  orderType: {
+    type: String,
+  },
   orderDetails: [orderDetailsSchema],
-  transactions: [transactionSchema], // Include transactions in the order schema
+  transactions: [transactionSchema],
 });
 
 const customerSchema = new mongoose.Schema({
