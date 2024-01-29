@@ -5,10 +5,17 @@ const { isAdmin } = require("../middleware/admin");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secret = process.env.HastString;
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 router.get("/", isAdmin, async (req, res) => {
   try {
     const employees = await EmployeeModel.find();
+    employees.forEach(async (employee) => {
+      const salt = await bcrypt.genSalt();
+      const decodedPass = await bcrypt.hash(employee.password, salt);
+      employee.password = decodedPass;
+    });
     res.send(employees);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -16,6 +23,9 @@ router.get("/", isAdmin, async (req, res) => {
 });
 
 router.post("/", isAdmin, async (req, res) => {
+  const password = req.body.password;
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(password, salt);
   const employee = new EmployeeModel({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -24,7 +34,7 @@ router.post("/", isAdmin, async (req, res) => {
     salary: req.body.salary,
     position: req.body.position,
     username: req.body.username,
-    password: req.body.password,
+    password: hashedPassword,
   });
   try {
     const newEmployee = await employee.save();
@@ -48,8 +58,14 @@ router.get("/token/:token", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const employee = await EmployeeModel.find({ id: req.params.id });
-    res.send(employee);
+    const employee = await EmployeeModel.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    });
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+    employee.password = "";
+    res.json(employee);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -57,30 +73,32 @@ router.get("/:id", async (req, res) => {
 
 router.patch("/:id", isAdmin, async (req, res) => {
   try {
-    const employee = await EmployeeModel.find({ id: req.params.id });
-    if (req.body.firstname) {
-      employee.firstname = req.body.firstname;
-    }
-    if (req.body.lastname) {
-      employee.lastname = req.body.lastname;
-    }
-    if (req.body.contact) {
-      employee.contact = req.body.contact;
-    }
-    if (req.body.address) {
-      employee.address = req.body.address;
-    }
-    if (req.body.salary) {
-      employee.salary = req.body.salary;
-    }
-    if (req.body.position) {
-      employee.position = req.body.position;
-    }
+    const employee = await EmployeeModel.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    });
+    const emp = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      contact: req.body.contact,
+      address: req.body.address,
+      salary: req.body.salary,
+      position: req.body.position,
+      username: req.body.username,
+    };
     if (req.body.password) {
-      employee.password = req.body.password;
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      emp.password = hashedPassword;
     }
-    const updatedEmployee = await employee.save();
-    res.json(updatedEmployee);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    } else {
+      await EmployeeModel.updateOne(
+        { _id: new mongoose.Types.ObjectId(req.params.id) },
+        { $set: emp }
+      );
+      res.status(200).json({ message: "Employee has been updated" });
+    }
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
