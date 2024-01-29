@@ -15,6 +15,25 @@ router.get("/", isAdmin, async (req, res) => {
   }
 });
 
+router.post("/", isAdmin, async (req, res) => {
+  const employee = new EmployeeModel({
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    contact: req.body.contact,
+    address: req.body.address,
+    salary: req.body.salary,
+    position: req.body.position,
+    username: req.body.username,
+    password: req.body.password,
+  });
+  try {
+    const newEmployee = await employee.save();
+    res.status(201).json({ message: "Employee has been added" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 router.get("/token/:token", async (req, res) => {
   try {
     const token = req.params.token;
