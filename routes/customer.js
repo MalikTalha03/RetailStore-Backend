@@ -99,19 +99,47 @@ router.patch("/:id/orders", async (req, res) => {
     let orderType = req.body.orderType;
     if (req.body.orderType !== "Online") {
       orderType = "Shop";
+      orderStatus = "Pending";
     }
-
+    orderStatus = "Completed";
     customer.orders.push({
       orderDate: req.body.orderDate,
       paymentStatus: req.body.paymentStatus,
       employeeid: req.body.employeeid,
       orderType: orderType,
+      orderStatus: orderStatus,
     });
 
     const updatedCustomer = await customer.save();
     res.json({
       message: "Order Added",
       id: updatedCustomer.orders[updatedCustomer.orders.length - 1]._id,
+    });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/orders/:orderId", async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    const order = customer.orders.id(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const { orderStatus } = req.body;
+
+    order.orderStatus = orderStatus;
+
+    const updatedCustomer = await customer.save();
+
+    res.json({
+      message: "Order Status Updated",
     });
   } catch (err) {
     res.status(400).json({ message: err.message });

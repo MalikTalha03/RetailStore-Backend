@@ -48,6 +48,9 @@ const orderSchema = new mongoose.Schema({
   orderType: {
     type: String,
   },
+  orderStatus: {
+    type: String,
+  },
   orderDetails: [orderDetailsSchema],
   transactions: [transactionSchema],
 });
