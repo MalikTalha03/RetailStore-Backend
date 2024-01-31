@@ -81,16 +81,12 @@ This is a backend of an ecommerce website's Admin Panel. It is built using Node.
 
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
-- [![React][React.js]][React-url]
 - [![NodeJS][Node.js]][Node-url]
 - [![Express][Express.js]][Express-url]
 - [![MongoDB][MongoDB.js]][MongoDB-url]
 - [![Mongoose][Mongoose.js]][Mongoose-url]
 - [![JWT][JWT.js]][JWT-url]
 - [![Bcrypt][Bcrypt.js]][Bcrypt-url]
-- [![Font Awesome][Font-Awesome.js]][Font-Awesome-url]
-- [![React Icons][React-Icons.js]][React-Icons-url]
-- [![React Router][React-Router.js]][React-Router-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -257,9 +253,6 @@ Use this space to list resources you find helpful and would like to give credit 
 [license-url]: https://github.com/MalikTalha03/RetailStore-Backend/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/MalikTalha03
-[product-screenshot]: images/screenshot.png
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
 [Node.js]: https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white
 [Node-url]: https://nodejs.org/en/
 [Express.js]: https://img.shields.io/badge/Express.js-404D59?style=for-the-badge
@@ -272,9 +265,3 @@ Use this space to list resources you find helpful and would like to give credit 
 [JWT-url]: https://jwt.io/
 [Bcrypt.js]: https://img.shields.io/badge/Bcrypt-000000?style=for-the-badge&logo=bcrypt&logoColor=white
 [Bcrypt-url]: https://www.npmjs.com/package/bcrypt
-[Font-Awesome.js]: https://img.shields.io/badge/Font%20Awesome-339AF0?style=for-the-badge&logo=font-awesome&logoColor=white
-[Font-Awesome-url]: https://fontawesome.com/
-[React-Icons.js]: https://img.shields.io/badge/React%20Icons-61DAFB?style=for-the-badge&logo=react&logoColor=white
-[React-Icons-url]: https://react-icons.github.io/react-icons/
-[React-Router.js]: https://img.shields.io/badge/React%20Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white
-[React-Router-url]: https://reactrouter.com/
