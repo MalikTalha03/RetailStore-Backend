@@ -13,16 +13,13 @@ const productSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: true,
   },
   supplierID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Supplier",
-    required: [true, "Please enter supplier ID"],
   },
   inventory: {
     type: Number,
-    required: [true, "Please enter product inventory"],
   },
 });
 
