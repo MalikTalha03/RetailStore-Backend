@@ -29,9 +29,9 @@ router.post("/", isAdmin, async (req, res) => {
   const product = new ProductModel({
     name: req.body.name,
     price: req.body.price,
-    category: req.body.category,
-    supplierID: req.body.supplierID,
-    inventory: req.body.inventory,
+    category: req.body.category || "",
+    supplierID: req.body.supplierID || "",
+    inventory: req.body.inventory || 0,
   });
   try {
     const newProduct = await product.save();
