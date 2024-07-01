@@ -70,7 +70,7 @@ router.patch("/:id",isAdmin, async (req, res) => {
 
 router.delete("/:id",isAdmin, async (req, res) => {
   try {
-    const product = await ProductModel.findOneAndDelete({ id: req.params.id });
+    const product = await ProductModel.findOneAndDelete({ _id: req.params.id });
     res.json({ message: `Product ${product.name} has been deleted` });
   } catch (err) {
     res.status(500).json({ message: err.message });
