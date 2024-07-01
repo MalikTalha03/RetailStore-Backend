@@ -278,6 +278,24 @@ router.patch("/:id/orders/:orderId/details", async (req, res) => {
   }
 });
 
+router.get("/:id/orders/:orderId", async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    const order = customer.orders.id(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.json(order);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 router.patch("/:id/orders/:orderId/transactions", async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id);
