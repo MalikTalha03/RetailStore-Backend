@@ -45,7 +45,7 @@ router.post("/", isAdmin, async (req, res) => {
 
 router.patch("/:id",isAdmin, async (req, res) => {
   try {
-    const product = await ProductModel.find({ id: req.params.id });
+    const product = await ProductModel.find({ _id: req.params.id });
     if (req.body.name) {
       product.name = req.body.name;
     }
