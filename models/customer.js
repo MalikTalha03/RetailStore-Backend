@@ -63,27 +63,6 @@ router.get("/today", async (req, res) => {
   }
 });
 
-router.get("/:customerId/orders/:orderId", async (req, res) => {
-  try {
-    const { customerId, orderId } = req.params;
-    const customer = await Customer.findById(customerId);
-
-    if (!customer) {
-      return res.status(404).json({ message: "Customer not found" });
-    }
-
-    const order = customer.orders.id(orderId);
-
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
-    res.json(order);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 router.post("/", async (req, res) => {
   const customer = new Customer({
     firstname: req.body.firstname,
@@ -118,7 +97,6 @@ router.patch("/:id/orders", async (req, res) => {
       employeeid = null;
     }
     let orderType = req.body.orderType;
-    let orderStatus = req.body.orderStatus;
     if (req.body.orderType !== "Online") {
       orderType = "Shop";
       orderStatus = "Pending";
@@ -295,6 +273,24 @@ router.patch("/:id/orders/:orderId/details", async (req, res) => {
       message: "Order Details Added",
       id: newOrderDetails[newOrderDetails.length - 1]._id,
     });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.get("/:id/orders/:orderId", async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.params.id);
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    const order = customer.orders.id(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.json(order);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
