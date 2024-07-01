@@ -17,8 +17,7 @@ const login = async (req, res, next) => {
       if (await bcrypt.compare(password, employee.password)) {
         const token = jwt.sign(
           { username: username, position: position },
-          secret,
-                    { expiresIn: "8h" } 
+          secret
         );
         res.status(200).json({
           message: "Login Successful",
@@ -34,6 +33,7 @@ const login = async (req, res, next) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 const register = async (req, res) => {
   const usernamee = req.body.username;
   if (usernamee == null) {
@@ -83,10 +83,12 @@ const loggedIn = (req, res, next) => {
     const decoded = jwt.verify(token, secret);
     req.user = decoded;
 
-    const now = Date.now().valueOf() / 1000;
-    if (typeof decoded.exp !== "undefined" && decoded.exp < now) {
-      return res.status(401).json({ message: "Token Expired" });
-    }
+    // Remove the check for token expiration
+    // const now = Date.now().valueOf() / 1000;
+    // if (typeof decoded.exp !== "undefined" && decoded.exp < now) {
+    //   return res.status(401).json({ message: "Token Expired" });
+    // }
+
     next();
   } catch (err) {
     res.status(400).json({ message: err.message });
