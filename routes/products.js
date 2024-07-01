@@ -43,34 +43,35 @@ router.post("/", isAdmin, async (req, res) => {
   }
 });
 
-router.patch("/:id",isAdmin, async (req, res) => {
+router.patch("/:id", isAdmin, async (req, res) => {
   try {
-    const product = await ProductModel.find({ _id: req.params.id });
-    if (req.body.name) {
-      product.name = req.body.name;
+    const updateData = {};
+    if (req.body.name) updateData.name = req.body.name;
+    if (req.body.price) updateData.price = req.body.price;
+    if (req.body.category) updateData.category = req.body.category;
+    if (req.body.supplierID) updateData.supplierID = req.body.supplierID;
+    if (req.body.inventory) updateData.inventory = req.body.inventory;
+
+    const product = await ProductModel.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
-    if (req.body.price) {
-      product.price = req.body.price;
-    }
-    if (req.body.category) {
-      product.category = req.body.category;
-    }
-    if (req.body.supplierID) {
-      product.supplierID = req.body.supplierID;
-    }
-    if (req.body.inventory) {
-      product.inventory = req.body.inventory;
-    }
-    await product.save();
+
     res.send(product);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
+
 router.delete("/:id",isAdmin, async (req, res) => {
   try {
+    console.log(req.params.id)
     const product = await ProductModel.findOneAndDelete({ _id: req.params.id });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
     res.json({ message: `Product ${product.name} has been deleted` });
   } catch (err) {
     res.status(500).json({ message: err.message });
