@@ -260,7 +260,7 @@ router.patch("/:id/orders/:orderId/details", async (req, res) => {
           );
         }
 
-        product.inventory -= orderDetail.qty;
+        product.inventory += orderDetail.qty;
 
         await product.save();
 
