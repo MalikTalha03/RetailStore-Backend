@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", isAdmin, async (req, res) => {
+router.post("/", async (req, res) => {
   const product = new ProductModel({
     name: req.body.name,
     price: req.body.price,
@@ -43,7 +43,7 @@ router.post("/", isAdmin, async (req, res) => {
   }
 });
 
-router.patch("/:id", isAdmin, async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
     const updateData = {};
     if (req.body.name) updateData.name = req.body.name;
@@ -65,7 +65,7 @@ router.patch("/:id", isAdmin, async (req, res) => {
 });
 
 
-router.delete("/:id",isAdmin, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     console.log(req.params.id)
     const product = await ProductModel.findOneAndDelete({ _id: req.params.id });
