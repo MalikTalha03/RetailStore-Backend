@@ -27,6 +27,7 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const product = new ProductModel({
+    _id: req.body._id,
     name: req.body.name,
     price: req.body.price,
     category: req.body.category || "",
