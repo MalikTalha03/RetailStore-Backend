@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const categorySchema = require("./category");
 const supplierSchema = require("./supplier");
 const productSchema = new mongoose.Schema({
+  _id: { type: String, required: true },
   name: {
     type: String,
     required: [true, "Please enter product name"],
