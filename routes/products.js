@@ -4,6 +4,8 @@ const ProductModel = require("../models/product");
 const { isAdmin } = require("../middleware/admin");
 const moongose = require("mongoose");
 
+const { v4: uuidv4 } = require('uuid');
+
 router.get("/", async (req, res) => {
   try {
     const products = await ProductModel.find().populate({
@@ -27,17 +29,13 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const productData = {
+    _id: req.body._id || uuidv4(),
     name: req.body.name,
     price: req.body.price,
-    category: req.body.category || "",
-    supplierID: req.body.supplierID || "",
+    category: req.body.category,
+    supplierID: req.body.supplierID,
     inventory: req.body.inventory || 0,
   };
-
-  // Conditionally add the _id field if it's provided
-  if (req.body._id) {
-    productData._id = req.body._id;
-  }
 
   const product = new ProductModel(productData);
 
