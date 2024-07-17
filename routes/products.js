@@ -26,14 +26,21 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const product = new ProductModel({
-    _id: req.body._id,
+  const productData = {
     name: req.body.name,
     price: req.body.price,
     category: req.body.category || "",
     supplierID: req.body.supplierID || "",
     inventory: req.body.inventory || 0,
-  });
+  };
+
+  // Conditionally add the _id field if it's provided
+  if (req.body._id) {
+    productData._id = req.body._id;
+  }
+
+  const product = new ProductModel(productData);
+
   try {
     const newProduct = await product.save();
     console.log(newProduct);
